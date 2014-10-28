@@ -721,7 +721,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		final Player p = event.getPlayer();
 		if (left_players.contains(event.getPlayer().getName())) {
@@ -756,14 +756,14 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
 		if (arenap_.containsKey(event.getPlayer().getName())) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onHunger(FoodLevelChangeEvent event) {
 		if (event.getEntity() instanceof Player) {
 			Player p = (Player) event.getEntity();
@@ -773,7 +773,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		// if (arenap_.containsKey(event.getPlayer().getName())) {
 		if (arenap.containsKey(event.getPlayer())) {
@@ -781,7 +781,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		// if (arenap_.containsKey(event.getPlayer().getName())) {
 		if (arenap.containsKey(event.getPlayer())) {
@@ -789,7 +789,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if (arenap_.containsKey(event.getPlayer().getName())) {
 			final String arena = arenap.get(event.getPlayer());
@@ -856,7 +856,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onSignUse(PlayerInteractEvent event) {
 		if (event.hasBlock()) {
 			if (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) {
@@ -874,7 +874,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onSignChange(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("colormatch")) {
@@ -901,7 +901,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled=true)
 	public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
 		if (arenap.containsKey(event.getPlayer()) && !event.getPlayer().isOp()) {
 			if (!event.getMessage().startsWith("/cm") && !event.getMessage().startsWith("/colormatch")) {
