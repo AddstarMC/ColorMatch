@@ -11,6 +11,8 @@ import java.util.Random;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
+import au.com.addstar.signmaker.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -76,6 +78,7 @@ public class Main extends JavaPlugin implements Listener {
 	 */
 
 	public static Economy econ = null;
+	public static SignMakerPlugin signmaker = null;
 
 	public static HashMap<String, Boolean> ingame = new HashMap<String, Boolean>(); // arena -> whether arena is ingame or not
 	public static HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>(); // arena -> task/ task
@@ -90,7 +93,7 @@ public class Main extends JavaPlugin implements Listener {
 	public static HashMap<String, Integer> a_currentw = new HashMap<String, Integer>();
 	public static HashMap<String, AClass> pclass = new HashMap<String, AClass>(); // player -> class
 	public static HashMap<String, AClass> aclasses = new HashMap<String, AClass>(); // classname -> class
-	public static HashMap<String, Boolean> pseenfall = new HashMap<String, Boolean>();
+	//public static HashMap<String, Boolean> pseenfall = new HashMap<String, Boolean>();  // REMOVED: Why does this exist?
 
 	int rounds_per_game = 10;
 	// int minplayers = 4;
@@ -141,7 +144,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
 
-		getConfig().options().header("I recommend you to set auto_updating to true for possible future bugfixes. If use_economy is set to false, the winner will get the item reward.");
+		getConfig().options().header(ct("I recommend you to set auto_updating to true for possible future bugfixes. If use_economy is set to false, the winner will get the item reward."));
 		getConfig().addDefault("config.auto_updating", true);
 		getConfig().addDefault("config.rounds_per_game", 10);
 		getConfig().addDefault("config.start_countdown", 5);
@@ -162,26 +165,26 @@ public class Main extends JavaPlugin implements Listener {
 		getConfig().addDefault("config.kits.default.potioneffect", "SPEED");
 		getConfig().addDefault("config.kits.default.amplifier", 1);
 		getConfig().addDefault("config.kits.default.gui_item_id", 341);
-		getConfig().addDefault("config.kits.default.lore", "&2The default class.");
+		getConfig().addDefault("config.kits.default.lore", ct("&2The default class."));
 
-		getConfig().addDefault("strings.saved.arena", "&aSuccessfully saved arena.");
-		getConfig().addDefault("strings.saved.lobby", "&aSuccessfully saved lobby.");
-		getConfig().addDefault("strings.saved.setup", "&6Successfully saved spawn. Now setting up, might &2lag&6 a little bit.");
-		getConfig().addDefault("strings.removed_arena", "&cSuccessfully removed arena.");
-		getConfig().addDefault("strings.not_in_arena", "&cYou don't seem to be in an arena right now.");
-		getConfig().addDefault("strings.config_reloaded", "&6Successfully reloaded config.");
-		getConfig().addDefault("strings.arena_is_ingame", "&cThe arena appears to be ingame.");
-		getConfig().addDefault("strings.arena_invalid", "&cThe arena appears to be invalid.");
-		getConfig().addDefault("strings.arena_invalid_sign", "&cThe arena appears to be invalid, because a join sign is missing.");
-		getConfig().addDefault("strings.arena_invalid_component", "&2The arena appears to be invalid (missing components or misstyped arena)!");
-		getConfig().addDefault("strings.you_fell", "&3You fell! Type &6/cm leave &3to leave.");
-		getConfig().addDefault("strings.you_won", "&aYou won this round, awesome man! Here, enjoy your reward.");
-		getConfig().addDefault("strings.starting_in", "&aStarting in &6");
-		getConfig().addDefault("strings.starting_in2", "&a seconds.");
-		getConfig().addDefault("strings.arena_full", "&cThis arena is full!");
-		getConfig().addDefault("strings.starting_announcement", "&aStarting a new ColorMatch Game in &6");
-		getConfig().addDefault("strings.started_announcement", "&aA new ColorMatch Round has started!");
-		getConfig().addDefault("strings.winner_announcement", "&6<player> &awon the game on arena &6<arena>!");
+		getConfig().addDefault("strings.saved.arena", ct("&aSuccessfully saved arena."));
+		getConfig().addDefault("strings.saved.lobby", ct("&aSuccessfully saved lobby."));
+		getConfig().addDefault("strings.saved.setup", ct("&6Successfully saved spawn. Now setting up, might &2lag&6 a little bit."));
+		getConfig().addDefault("strings.removed_arena", ct("&cSuccessfully removed arena."));
+		getConfig().addDefault("strings.not_in_arena", ct("&cYou don't seem to be in an arena right now."));
+		getConfig().addDefault("strings.config_reloaded", ct("&6Successfully reloaded config."));
+		getConfig().addDefault("strings.arena_is_ingame", ct("&cThe arena appears to be ingame."));
+		getConfig().addDefault("strings.arena_invalid", ct("&cThe arena appears to be invalid."));
+		getConfig().addDefault("strings.arena_invalid_sign", ct("&cThe arena appears to be invalid, because a join sign is missing."));
+		getConfig().addDefault("strings.arena_invalid_component", ct("&2The arena appears to be invalid (missing components or misstyped arena)!"));
+		getConfig().addDefault("strings.you_fell", ct("&3You fell! Type &6/cm leave &3to leave."));
+		getConfig().addDefault("strings.you_won", ct("&aYou won this round, awesome man! Here, enjoy your reward."));
+		getConfig().addDefault("strings.starting_in", ct("&aStarting in &6"));
+		getConfig().addDefault("strings.starting_in2", ct("&a seconds."));
+		getConfig().addDefault("strings.arena_full", ct("&cThis arena is full!"));
+		getConfig().addDefault("strings.starting_announcement", ct("&aStarting a new ColorMatch Game in &6"));
+		getConfig().addDefault("strings.started_announcement", ct("&aA new ColorMatch Round has started!"));
+		getConfig().addDefault("strings.winner_announcement", ct("&6<player> &awon the game on arena &6<arena>!"));
 
 		getConfig().options().copyDefaults(true);
 		if (getConfig().isSet("config.min_players")) {
@@ -213,6 +216,12 @@ public class Main extends JavaPlugin implements Listener {
 				economy = false;
 			}
 		}
+		
+		if (setupSignMaker()) {
+			getLogger().info(String.format("[%s] SuperSigns plugin found - integration is enabled", getDescription().getName()));
+		} else {
+			getLogger().warning(String.format("[%s] SuperSigns plugin was not found - integration is disabled!", getDescription().getName()));
+		}
 
 		loadClasses();
 
@@ -220,7 +229,6 @@ public class Main extends JavaPlugin implements Listener {
 		if (getConfig().isSet("ingamearenas")) {
 			ArrayList<String> arenas = new ArrayList<String>(getConfig().getConfigurationSection("ingamearenas.").getKeys(false));
 			for (String arena : arenas) {
-				System.out.println("Resetting " + arena);
 				stop(null, arena);
 				getConfig().set("ingamearenas." + arena, null);
 				this.saveConfig();
@@ -262,6 +270,11 @@ public class Main extends JavaPlugin implements Listener {
 		return econ != null;
 	}
 
+	private boolean setupSignMaker() {
+		signmaker = (SignMakerPlugin) getServer().getPluginManager().getPlugin("SuperSigns");
+		return signmaker != null;
+	}
+
 	public void getConfigVars() {
 		rounds_per_game = getConfig().getInt("config.rounds_per_game");
 		default_max_players = getConfig().getInt("config.default_max_players");
@@ -277,25 +290,25 @@ public class Main extends JavaPlugin implements Listener {
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
 		bling_sounds = getConfig().getBoolean("config.bling_sounds");
 
-		saved_arena = getConfig().getString("strings.saved.arena").replaceAll("&", "�");
-		saved_lobby = getConfig().getString("strings.saved.lobby").replaceAll("&", "�");
-		saved_setup = getConfig().getString("strings.saved.setup").replaceAll("&", "�");
-		saved_mainlobby = "�aSuccessfully saved main lobby";
-		not_in_arena = getConfig().getString("strings.not_in_arena").replaceAll("&", "�");
-		reloaded = getConfig().getString("strings.config_reloaded").replaceAll("&", "�");
-		arena_ingame = getConfig().getString("strings.arena_is_ingame").replaceAll("&", "�");
-		arena_invalid = getConfig().getString("strings.arena_invalid").replaceAll("&", "�");
-		arena_invalid_sign = getConfig().getString("strings.arena_invalid_sign").replaceAll("&", "�");
-		you_fell = getConfig().getString("strings.you_fell").replaceAll("&", "�");
-		arena_invalid_component = getConfig().getString("strings.arena_invalid_component").replace("&", "�");
-		you_won = getConfig().getString("strings.you_won").replaceAll("&", "�");
-		starting_in = getConfig().getString("strings.starting_in").replaceAll("&", "�");
-		starting_in2 = getConfig().getString("strings.starting_in2").replaceAll("&", "�");
-		arena_full = getConfig().getString("strings.arena_full").replaceAll("&", "�");
-		starting = getConfig().getString("strings.starting_announcement").replaceAll("&", "�");
-		started = getConfig().getString("strings.started_announcement").replaceAll("&", "�");
-		removed_arena = getConfig().getString("strings.removed_arena").replaceAll("&", "�");
-		winner_an = getConfig().getString("strings.winner_announcement").replaceAll("&", "�");
+		saved_arena = ct(getConfig().getString("strings.saved.arena"));
+		saved_lobby = ct(getConfig().getString("strings.saved.lobby"));
+		saved_setup = ct(getConfig().getString("strings.saved.setup"));
+		saved_mainlobby = ct("&aSuccessfully saved main lobby");
+		not_in_arena = ct(getConfig().getString("strings.not_in_arena"));
+		reloaded = ct(getConfig().getString("strings.config_reloaded"));
+		arena_ingame = ct(getConfig().getString("strings.arena_is_ingame"));
+		arena_invalid = ct(getConfig().getString("strings.arena_invalid"));
+		arena_invalid_sign = ct(getConfig().getString("strings.arena_invalid_sign"));
+		you_fell = ct(getConfig().getString("strings.you_fell"));
+		arena_invalid_component = ct(getConfig().getString("strings.arena_invalid_component"));
+		you_won = ct(getConfig().getString("strings.you_won"));
+		starting_in = ct(getConfig().getString("strings.starting_in"));
+		starting_in2 = ct(getConfig().getString("strings.starting_in2"));
+		arena_full = ct(getConfig().getString("strings.arena_full"));
+		starting = ct(getConfig().getString("strings.starting_announcement"));
+		started = ct(getConfig().getString("strings.started_announcement"));
+		removed_arena = ct(getConfig().getString("strings.removed_arena"));
+		winner_an = ct(getConfig().getString("strings.winner_announcement"));
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -319,7 +332,7 @@ public class Main extends JavaPlugin implements Listener {
 						if (sender.hasPermission("colormatch.setup")) {
 							String arenaname = args[1];
 							if (isValidArena(arenaname)) {
-								sender.sendMessage("�cRemoving " + arenaname + ". This will �6lag �ca little bit.");
+								sender.sendMessage(ct("&cRemoving " + arenaname + ". This will &6lag &a little bit."));
 								if (isArenax32(arenaname)) {
 									this.removeArenax32(getSpawn(arenaname), this, arenaname);
 								} else {
@@ -342,7 +355,7 @@ public class Main extends JavaPlugin implements Listener {
 				 * else if (action.equalsIgnoreCase("setspawn")) { if (args.length > 1) { Player p = (Player) sender; String arenaname = args[1];
 				 * getConfig().set(arenaname + ".spawn.world", p.getWorld().getName()); getConfig().set(arenaname + ".spawn.loc.x",
 				 * p.getLocation().getBlockX()); getConfig().set(arenaname + ".spawn.loc.y", p.getLocation().getBlockY()); getConfig().set(arenaname +
-				 * ".spawn.loc.z", p.getLocation().getBlockZ()); this.saveConfig(); sender.sendMessage("�2Successfully saved spawn."); } }
+				 * ".spawn.loc.z", p.getLocation().getBlockZ()); this.saveConfig(); sender.sendMessage(ct("&2Successfully saved spawn."); } }
 				 */else if (action.equalsIgnoreCase("setlobby")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("colormatch.setup")) {
@@ -483,16 +496,16 @@ public class Main extends JavaPlugin implements Listener {
 							String playercount = args[2];
 							if (!isNumeric(playercount)) {
 								playercount = Integer.toString(default_max_players);
-								sender.sendMessage("�cPlayercount is invalid. Setting to default value.");
+								sender.sendMessage(ct("&cPlayercount is invalid. Setting to default value."));
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("�cCould not find this arena.");
+								sender.sendMessage(ct("&cCould not find this arena."));
 								return true;
 							}
 							this.setArenaMaxPlayers(arena, Integer.parseInt(playercount));
-							sender.sendMessage("�eSuccessfully set!");
+							sender.sendMessage(ct("&eSuccessfully set!"));
 						} else {
-							sender.sendMessage("�cUsage: /cm setmaxplayers [arena] [count].");
+							sender.sendMessage(ct("&cUsage: /cm setmaxplayers [arena] [count]."));
 						}
 					}
 				} else if (action.equalsIgnoreCase("setminplayers")) {
@@ -502,16 +515,16 @@ public class Main extends JavaPlugin implements Listener {
 							String playercount = args[2];
 							if (!isNumeric(playercount)) {
 								playercount = Integer.toString(default_min_players);
-								sender.sendMessage("�cPlayercount is invalid. Setting to default value.");
+								sender.sendMessage(ct("&cPlayercount is invalid. Setting to default value."));
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("�cCould not find this arena.");
+								sender.sendMessage(ct("&cCould not find this arena."));
 								return true;
 							}
 							this.setArenaMinPlayers(arena, Integer.parseInt(playercount));
-							sender.sendMessage("�eSuccessfully set!");
+							sender.sendMessage(ct("&eSuccessfully set!"));
 						} else {
-							sender.sendMessage("�cUsage: /cm setminplayers [arena] [count].");
+							sender.sendMessage(ct("&cUsage: /cm setminplayers [arena] [count]."));
 						}
 					}
 				} else if (action.equalsIgnoreCase("setdifficulty")) {
@@ -521,16 +534,16 @@ public class Main extends JavaPlugin implements Listener {
 							String difficulty = args[2];
 							if (!isNumeric(difficulty)) {
 								difficulty = "1";
-								sender.sendMessage("�cDifficulty is invalid. Possible difficulties: 0, 1, 2.");
+								sender.sendMessage(ct("&cDifficulty is invalid. Possible difficulties: 0, 1, 2."));
 							}
 							if (!getConfig().isSet(arena)) {
-								sender.sendMessage("�cCould not find this arena.");
+								sender.sendMessage(ct("&cCould not find this arena."));
 								return true;
 							}
 							this.setArenaDifficulty(arena, Integer.parseInt(difficulty));
-							sender.sendMessage("�eSuccessfully set!");
+							sender.sendMessage(ct("&eSuccessfully set!"));
 						} else {
-							sender.sendMessage("�cUsage: /cm setdifficulty [arena] [difficulty]. Difficulty can be 0, 1 or 2.");
+							sender.sendMessage(ct("&cUsage: /cm setdifficulty [arena] [difficulty]. Difficulty can be 0, 1 or 2."));
 						}
 					}
 				} else if (action.equalsIgnoreCase("join")) {
@@ -543,7 +556,7 @@ public class Main extends JavaPlugin implements Listener {
 								getLogger().warning("No sign found for arena " + args[1] + ". May lead to errors.");
 							}
 							if (s != null) {
-								if (s.getLine(1).equalsIgnoreCase("�2[join]")) {
+								if (s.getLine(1).equalsIgnoreCase(ct("&2[join]"))) {
 									joinLobby((Player) sender, args[1]);
 								} else {
 									sender.sendMessage(arena_ingame);
@@ -569,7 +582,7 @@ public class Main extends JavaPlugin implements Listener {
 								}
 							}
 							if (count < 1) {
-								sender.sendMessage("�cNoone is in this arena.");
+								sender.sendMessage(ct("&cNoone is in this arena."));
 								return true;
 							}
 							if (!ingame.get(arena)) {
@@ -622,32 +635,32 @@ public class Main extends JavaPlugin implements Listener {
 							if (aclasses.containsKey(args[1])) {
 								if (args[1].equalsIgnoreCase("default")) {
 									this.setClass(args[1], p.getName());
-									sender.sendMessage("�aKit successfully set!");
+									sender.sendMessage(ct("&aKit successfully set!"));
 									return true;
 								}
 								if (p.hasPermission("colormatch.kit." + args[1])) {
 									this.setClass(args[1], p.getName());
-									sender.sendMessage("�aKit successfully set!");
+									sender.sendMessage(ct("&aKit successfully set!"));
 								}
 							} else {
 								String all = "  ";
 								for (String class_ : aclasses.keySet()) {
 									all += class_ + ", ";
 								}
-								sender.sendMessage("�cThis is not a valid kit. Possible ones:�3" + all.substring(0, all.length() - 2));
+								sender.sendMessage(ct("&cThis is not a valid kit. Possible ones:&3" + all.substring(0, all.length() - 2)));
 							}
 						} else {
-							sender.sendMessage("�cYou are not in an arena right now.");
+							sender.sendMessage(ct("&cYou are not in an arena right now."));
 						}
 					} else {
-						sender.sendMessage("�cUsage: �a/cm changekit [name].");
+						sender.sendMessage(ct("&cUsage: &a/cm changekit [name]."));
 					}
 				} else if (action.equalsIgnoreCase("kitgui")) {
 					Player p = (Player) sender;
 					if (arenap.containsKey(p)) {
 						openGUI(this, p.getName());
 					} else {
-						sender.sendMessage("�cYou are not in an arena right now.");
+						sender.sendMessage(ct("&cYou are not in an arena right now."));
 					}
 				} else if (action.equalsIgnoreCase("reload")) {
 					if (sender.hasPermission("colormatch.reload")) {
@@ -657,34 +670,34 @@ public class Main extends JavaPlugin implements Listener {
 					}
 				} else if (action.equalsIgnoreCase("list")) {
 					if (sender.hasPermission("colormatch.list")) {
-						sender.sendMessage("�6-= Arenas =-");
+						sender.sendMessage(ct("&6-= Arenas =-"));
 						for (String arena : getConfig().getKeys(false)) {
 							if (!arena.equalsIgnoreCase("mainlobby") && !arena.equalsIgnoreCase("strings") && !arena.equalsIgnoreCase("config") && !arena.equalsIgnoreCase("leftplayers") && !arena.equalsIgnoreCase("ingamearenas")) {
-								sender.sendMessage("�2" + arena);
+								sender.sendMessage(ct("&2" + arena));
 							}
 						}
 					}
 				} else {
-					sender.sendMessage("�6-= ColorMatch �2help: �6=-");
-					sender.sendMessage("�2To �6setup the main lobby �2, type in �c/cm setmainlobby");
-					sender.sendMessage("�2To �6setup �2a new arena, type in the following commands:");
-					sender.sendMessage("�2/cm createarena [name]");
-					sender.sendMessage("�2/cm setlobby [name] �6 - for the waiting lobby");
-					sender.sendMessage("�2/cm setup [name]");
+					sender.sendMessage(ct("&6-= ColorMatch &2help: &6=-"));
+					sender.sendMessage(ct("&2To &6setup the main lobby &2, type in &c/cm setmainlobby"));
+					sender.sendMessage(ct("&2To &6setup &2a new arena, type in the following commands:"));
+					sender.sendMessage(ct("&2/cm createarena [name]"));
+					sender.sendMessage(ct("&2/cm setlobby [name] &6 - for the waiting lobby"));
+					sender.sendMessage(ct("&2/cm setup [name]"));
 					sender.sendMessage("");
-					sender.sendMessage("�2You can join with �c/cm join [name] �2and leave with �c/cm leave�2.");
-					sender.sendMessage("�2You can force an arena to start with �c/cm start [name]�2.");
+					sender.sendMessage(ct("&2You can join with &c/cm join [name] &2and leave with &c/cm leave&2."));
+					sender.sendMessage(ct("&2You can force an arena to start with &c/cm start [name]&2."));
 				}
 			} else {
-				sender.sendMessage("�6-= ColorMatch �2help: �6=-");
-				sender.sendMessage("�2To �6setup the main lobby �2, type in �c/cm setmainlobby");
-				sender.sendMessage("�2To �6setup �2a new arena, type in the following commands:");
-				sender.sendMessage("�2/cm createarena [name]");
-				sender.sendMessage("�2/cm setlobby [name] �6 - for the waiting lobby");
-				sender.sendMessage("�2/cm setup [name]");
+				sender.sendMessage(ct("&6-= ColorMatch &2help: &6=-"));
+				sender.sendMessage(ct("&2To &6setup the main lobby &2, type in &c/cm setmainlobby"));
+				sender.sendMessage(ct("&2To &6setup &2a new arena, type in the following commands:"));
+				sender.sendMessage(ct("&2/cm createarena [name]"));
+				sender.sendMessage(ct("&2/cm setlobby [name] &6 - for the waiting lobby"));
+				sender.sendMessage(ct("&2/cm setup [name]"));
 				sender.sendMessage("");
-				sender.sendMessage("�2You can join with �c/cm join [name] �2and leave with �c/cm leave�2.");
-				sender.sendMessage("�2You can force an arena to start with �c/cm start [name]�2.");
+				sender.sendMessage(ct("&2You can join with &c/cm join [name] &2and leave with &c/cm leave&2."));
+				sender.sendMessage(ct("&2You can force an arena to start with &c/cm start [name]&2."));
 			}
 			return true;
 		}
@@ -708,7 +721,7 @@ public class Main extends JavaPlugin implements Listener {
 			try {
 				Sign s = this.getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "�2[Join]");
+					s.setLine(1, ct("&2[Join]"));
 					s.setLine(3, Integer.toString(count - 1) + "/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -794,6 +807,7 @@ public class Main extends JavaPlugin implements Listener {
 		if (arenap_.containsKey(event.getPlayer().getName())) {
 			final String arena = arenap.get(event.getPlayer());
 			if (lost.containsKey(event.getPlayer())) {
+				// Player did not win
 				Location l = getSpawn(lost.get(event.getPlayer()));
 				final Location spectatorlobby = new Location(l.getWorld(), l.getBlockX(), l.getBlockY() + getArenaSpectateHeight(arena), l.getBlockZ());
 				if (event.getPlayer().getLocation().getBlockY() < spectatorlobby.getBlockY() || event.getPlayer().getLocation().getBlockY() > spectatorlobby.getBlockY()) {
@@ -813,44 +827,47 @@ public class Main extends JavaPlugin implements Listener {
 							}
 						}
 					}, 5);
-					if (!pseenfall.containsKey(p.getName())) {
+					// REMOVED: Why does this even exist?
+					/*if (!pseenfall.containsKey(p.getName())) {
 						pseenfall.put(p.getName(), false);
 					}
 					if (!pseenfall.get(p.getName())) {
 						p.sendMessage(you_fell);
 						pseenfall.put(p.getName(), true);
-					}
+					}*/
 				}
-			}
-			if (event.getPlayer().getLocation().getBlockY() < getSpawn(arena).getBlockY() - getArenaFallDepth(arena)) {
-				lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
-				final Player p__ = event.getPlayer();
-				Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-					public void run() {
-						try {
-							Location l = getSpawn(arena);
-							p__.teleport(new Location(l.getWorld(), l.getBlockX(), l.getBlockY() + getArenaSpectateHeight(arena), l.getBlockZ()));
-							p__.setAllowFlight(true);
-							p__.setFlying(true);
-						} catch (Exception e) {
-							e.printStackTrace();
+			} else {
+				if (event.getPlayer().getLocation().getBlockY() < getSpawn(arena).getBlockY() - getArenaFallDepth(arena)) {
+					// Player has fallen
+					lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
+					final Player p__ = event.getPlayer();
+					Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+						public void run() {
+							try {
+								Location l = getSpawn(arena);
+								p__.teleport(new Location(l.getWorld(), l.getBlockX(), l.getBlockY() + getArenaSpectateHeight(arena), l.getBlockZ()));
+								p__.setAllowFlight(true);
+								p__.setFlying(true);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					}, 5);
+	
+					int count = 0;
+	
+					for (Player p : arenap.keySet()) {
+						if (arenap.get(p).equalsIgnoreCase(arena)) {
+							if (!lost.containsKey(p)) {
+								count++;
+							}
 						}
 					}
-				}, 5);
-
-				int count = 0;
-
-				for (Player p : arenap.keySet()) {
-					if (arenap.get(p).equalsIgnoreCase(arena)) {
-						if (!lost.containsKey(p)) {
-							count++;
-						}
+	
+					if (count < 2) {
+						// last man standing!
+						stop(h.get(arena), arena);
 					}
-				}
-
-				if (count < 2) {
-					// last man standing!
-					stop(h.get(arena), arena);
 				}
 			}
 		}
@@ -862,7 +879,7 @@ public class Main extends JavaPlugin implements Listener {
 			if (event.getClickedBlock().getType() == Material.SIGN_POST || event.getClickedBlock().getType() == Material.WALL_SIGN) {
 				final Sign s = (Sign) event.getClickedBlock().getState();
 				if (s.getLine(0).toLowerCase().contains("colormatch")) {
-					if (s.getLine(1).equalsIgnoreCase("�2[join]")) {
+					if (s.getLine(1).equalsIgnoreCase(ct("&2[join]"))) {
 						if (isValidArena(s.getLine(2))) {
 							joinLobby(event.getPlayer(), s.getLine(2));
 						} else {
@@ -879,7 +896,7 @@ public class Main extends JavaPlugin implements Listener {
 		Player p = event.getPlayer();
 		if (event.getLine(0).toLowerCase().equalsIgnoreCase("colormatch")) {
 			if (event.getPlayer().hasPermission("cm.sign") || event.getPlayer().hasPermission("colormatch.sign") || event.getPlayer().isOp()) {
-				event.setLine(0, "�6�lColorMatch");
+				event.setLine(0, ct("&6&lColorMatch"));
 				if (!event.getLine(2).equalsIgnoreCase("")) {
 					String arena = event.getLine(2);
 					if (isValidArena(arena)) {
@@ -888,12 +905,12 @@ public class Main extends JavaPlugin implements Listener {
 						getConfig().set(arena + ".sign.loc.y", event.getBlock().getLocation().getBlockY());
 						getConfig().set(arena + ".sign.loc.z", event.getBlock().getLocation().getBlockZ());
 						this.saveConfig();
-						p.sendMessage("�2Successfully created arena sign.");
+						p.sendMessage(ct("&2Successfully created arena sign."));
 					} else {
 						p.sendMessage(arena_invalid_component);
 						event.getBlock().breakNaturally();
 					}
-					event.setLine(1, "�2[Join]");
+					event.setLine(1, ct("&2[Join]"));
 					event.setLine(2, arena);
 					event.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 				}
@@ -905,7 +922,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void onPlayerCommandPreprocessEvent(PlayerCommandPreprocessEvent event) {
 		if (arenap.containsKey(event.getPlayer()) && !event.getPlayer().isOp()) {
 			if (!event.getMessage().startsWith("/cm") && !event.getMessage().startsWith("/colormatch")) {
-				event.getPlayer().sendMessage("�cPlease use �6/cm leave �cto leave this minigame.");
+				event.getPlayer().sendMessage(ct("&cPlease use &6/cm leave &cto leave this minigame."));
 				event.setCancelled(true);
 				return;
 			}
@@ -994,9 +1011,10 @@ public class Main extends JavaPlugin implements Listener {
 				pclass.remove(p.getName());
 			}
 
-			if (pseenfall.containsKey(p.getName())) {
+			// REMOVED: Why does this even exist?
+			/*if (pseenfall.containsKey(p.getName())) {
 				pseenfall.remove(p.getName());
-			}
+			}*/
 
 			Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 				public void run() {
@@ -1091,6 +1109,10 @@ public class Main extends JavaPlugin implements Listener {
 			p.sendMessage(arena_full);
 			return;
 		}
+		
+		if (count_ == 0) {
+			updateSuperSigns(arena, "Waiting", new ItemStack(Material.STAINED_CLAY));
+		}
 
 		// continue
 		arenap.put(p, arena);
@@ -1129,6 +1151,7 @@ public class Main extends JavaPlugin implements Listener {
 						ingame.put(arena, false);
 					}
 					if (!ingame.get(arena)) {
+						updateSuperSigns(arena, "", null);
 						start(arena);
 					}
 				}
@@ -1212,7 +1235,7 @@ public class Main extends JavaPlugin implements Listener {
 	public static void setup(Location start, Main main, String name_) {
 		int x = start.getBlockX() - 32;
 		int y = start.getBlockY();
-		int y_ = start.getBlockY() - 4;
+		int y_ = start.getBlockY() - 7;
 		int z = start.getBlockZ() - 32;
 
 		int current = 0;
@@ -1343,7 +1366,7 @@ public class Main extends JavaPlugin implements Listener {
 						public void run() {
 							Sign s = getSignFromArena(arena);
 							if (s != null) {
-								s.setLine(1, "�4[Ingame]");
+								s.setLine(1, ct("&4[Ingame]"));
 								s.update();
 							}
 						}
@@ -1374,7 +1397,7 @@ public class Main extends JavaPlugin implements Listener {
 		final int d = difficulty;
 
 		BukkitTask id__ = null;
-		id__ = Bukkit.getServer().getScheduler().runTaskTimerAsynchronously(m, new Runnable() {
+		id__ = Bukkit.getServer().getScheduler().runTaskTimer(m, new Runnable() {
 			@Override
 			public void run() {
 				try {
@@ -1394,6 +1417,27 @@ public class Main extends JavaPlugin implements Listener {
 						a_currentw.put(arena, temp);
 					}
 					int currentw = a_currentw.get(arena);
+
+					// REMOVED: Why is this even here???
+					//Wool w = new Wool();
+					//w.setColor(colors.get(currentw));
+
+					DyeColor dc = colors.get(currentw);
+					ItemStack item;
+					if (isArenaClayMode(arena) || isArenax32ClayMode(arena)) {
+						item = new ItemStack(Material.STAINED_CLAY, 1, dc.getData());
+					} else if (isArenaGlassMode(arena) || isArenax32GlassMode(arena)) {
+						item = new ItemStack(Material.STAINED_GLASS, 1, dc.getData());
+					} else {
+						item = new ItemStack(Material.WOOL, 1, dc.getData());
+					}
+					ItemMeta im = item.getItemMeta();
+					im.setDisplayName(dyeToChat(dc) + "" + ChatColor.BOLD + dc.name());
+					item.setItemMeta(im);
+
+					// Update SuperSigns
+					updateSuperSigns(arena, dc.name(), item);
+
 					for (final Player p : arenap.keySet()) {
 						if (p.isOnline()) {
 							if (arenap.get(p).equalsIgnoreCase(arena)) {
@@ -1401,8 +1445,6 @@ public class Main extends JavaPlugin implements Listener {
 								// set inventory and exp bar
 								p.getInventory().clear();
 								p.updateInventory();
-								Wool w = new Wool();
-								w.setColor(colors.get(currentw));
 
 								p.setExp(0.97F);
 								if (!xpsecp.containsKey(p)) {
@@ -1428,22 +1470,9 @@ public class Main extends JavaPlugin implements Listener {
 									}
 								}, (80L - (d * 20) - n) / 12, (80L - (d * 20) - n) / 12));
 
-								DyeColor dc = colors.get(currentw);
-								ItemStack item;
-								if (isArenaClayMode(arena) || isArenax32ClayMode(arena)) {
-									item = new ItemStack(Material.STAINED_CLAY, 1, dc.getData());
-								} else if (isArenaGlassMode(arena) || isArenax32GlassMode(arena)) {
-									item = new ItemStack(Material.STAINED_GLASS, 1, dc.getData());
-								} else {
-									item = new ItemStack(Material.WOOL, 1, dc.getData());
-								}
-								ItemMeta m = item.getItemMeta();
-								m.setDisplayName(dyeToChat(dc) + "" + ChatColor.BOLD + dc.name());
-								item.setItemMeta(m);
 								for (int i = 0; i < 9; i++) {
 									p.getInventory().setItem(i, item);
 								}
-								// p.getInventory().all(wool);
 								p.updateInventory();
 							}
 						}
@@ -1453,6 +1482,10 @@ public class Main extends JavaPlugin implements Listener {
 						// Bukkit.getServer().getScheduler().runTaskLaterAsynchronously(m,
 						// new Runnable(){
 						public void run() {
+							// Don't do anything if game has finished
+							if (!ingame.get(arena))
+								return;
+
 							if (isArenax32(arena)) {
 								cmx32.removeAllExceptOne(getSpawn(arena), arena);
 							} else if (isArenax32ClayMode(arena)) {
@@ -1485,6 +1518,11 @@ public class Main extends JavaPlugin implements Listener {
 					BukkitTask id = Bukkit.getServer().getScheduler().runTaskLater(m, new Runnable() {
 						@Override
 						public void run() {
+							// Don't do anything if game has finished
+							if (!ingame.get(arena))
+								return;
+
+							updateSuperSigns(arena, "", null);
 							if (isArenax32(arena)) {
 								cmx32.reset(getSpawn(arena));
 							} else if (isArenax32ClayMode(arena)) {
@@ -1627,6 +1665,9 @@ public class Main extends JavaPlugin implements Listener {
 
 		}
 
+		// Reset super signs to the "idle" message
+		updateSuperSigns(arena, getArenaIdleMessage(arena), new ItemStack(Material.STAINED_CLAY));
+
 		// runs all that stuff later, that fixes the
 		// "players are stuck in arena" bug!
 		Bukkit.getScheduler().runTaskLater(this, new Runnable() {
@@ -1639,7 +1680,7 @@ public class Main extends JavaPlugin implements Listener {
 				}
 
 				// removeScoreboard(arena);
-
+				
 				ArrayList<Player> torem = new ArrayList<Player>();
 				determineWinners(arena);
 				for (Player p : arenap.keySet()) {
@@ -1664,7 +1705,7 @@ public class Main extends JavaPlugin implements Listener {
 
 				Sign s = getSignFromArena(arena);
 				if (s != null) {
-					s.setLine(1, "�2[Join]");
+					s.setLine(1, ct("&2[Join]"));
 					s.setLine(3, "0/" + Integer.toString(getArenaMaxPlayers(arena)));
 					s.update();
 				}
@@ -1783,14 +1824,14 @@ public class Main extends JavaPlugin implements Listener {
 						Objective objective = board.registerNewObjective("test", "dummy");
 						objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-						objective.setDisplayName("�cC�3o�dl�5o�6r�1M�aa�2t�4c�eh!"); // <- ColorMatch
+						objective.setDisplayName(ct("&cC&3o&dl&5o&6r&1M&aa&2t&4c&eh!")); // <- ColorMatch
 
 						try {
-							objective.getScore(Bukkit.getOfflinePlayer(" �8-  ")).setScore(5);
-							objective.getScore(Bukkit.getOfflinePlayer("�aArena")).setScore(4);
-							objective.getScore(Bukkit.getOfflinePlayer("�d" + arena)).setScore(3);
-							objective.getScore(Bukkit.getOfflinePlayer(" �8- ")).setScore(2);
-							objective.getScore(Bukkit.getOfflinePlayer("�aPlayers Left")).setScore(1);
+							objective.getScore(Bukkit.getOfflinePlayer(ct(" &8-  "))).setScore(5);
+							objective.getScore(Bukkit.getOfflinePlayer(ct("&aArena"))).setScore(4);
+							objective.getScore(Bukkit.getOfflinePlayer(ct("&d" + arena))).setScore(3);
+							objective.getScore(Bukkit.getOfflinePlayer(ct(" &8- "))).setScore(2);
+							objective.getScore(Bukkit.getOfflinePlayer(ct("&aPlayers Left"))).setScore(1);
 							objective.getScore(Bukkit.getOfflinePlayer(Integer.toString(count - lostcount) + "/" + Integer.toString(count))).setScore(0);
 						} catch (Exception e) {
 							//
@@ -1889,6 +1930,18 @@ public class Main extends JavaPlugin implements Listener {
 		this.saveConfig();
 	}
 
+	public int getArenaFloorDepth(String arena) {
+		if (!getConfig().isSet(arena + ".floor_depth")) {
+			setArenaFloorDepth(arena, 20);
+		}
+		return getConfig().getInt(arena + ".floor_depth");
+	}
+
+	public void setArenaFloorDepth(String arena, int depth) {
+		getConfig().set(arena + ".floor_depth", depth);
+		this.saveConfig();
+	}
+
 	public int getArenaFallDepth(String arena) {
 		if (!getConfig().isSet(arena + ".fall_depth")) {
 			setArenaFallDepth(arena, 5);
@@ -1898,6 +1951,30 @@ public class Main extends JavaPlugin implements Listener {
 
 	public void setArenaFallDepth(String arena, int depth) {
 		getConfig().set(arena + ".fall_depth", depth);
+		this.saveConfig();
+	}
+
+	public int getArenaSuperSigns(String arena) {
+		if (!getConfig().isSet(arena + ".supersigns")) {
+			setArenaSuperSigns(arena, 0);
+		}
+		return getConfig().getInt(arena + ".supersigns");
+	}
+
+	public void setArenaSuperSigns(String arena, int signs) {
+		getConfig().set(arena + ".supersigns", signs);
+		this.saveConfig();
+	}
+
+	public String getArenaIdleMessage(String arena) {
+		if (!getConfig().isSet(arena + ".idle_message")) {
+			setArenaIdleMessage(arena, "Game Over");
+		}
+		return getConfig().getString(arena + ".idle_message");
+	}
+
+	public void setArenaIdleMessage(String arena, String msg) {
+		getConfig().set(arena + ".idle_message", msg);
 		this.saveConfig();
 	}
 
@@ -2036,15 +2113,41 @@ public class Main extends JavaPlugin implements Listener {
 		int c = 0;
 		for (String ac : aclasses.keySet()) {
 			if (getConfig().isSet("config.kits." + ac + ".gui_item_id")) {
-				iconm.setOption(c, new ItemStack(Material.getMaterial(getConfig().getInt("config.kits." + ac + ".gui_item_id"))), ac, m.getConfig().getString("config.kits." + ac + ".lore").replaceAll("&", "�"));
+				iconm.setOption(c, new ItemStack(Material.getMaterial(getConfig().getInt("config.kits." + ac + ".gui_item_id"))), ac, ct(m.getConfig().getString("config.kits." + ac + ".lore")));
 			} else {
-				iconm.setOption(c, new ItemStack(Material.SLIME_BALL), ac, m.getConfig().getString("config.kits." + ac + ".lore").replaceAll("&", "�"));
+				iconm.setOption(c, new ItemStack(Material.SLIME_BALL), ac, ct(m.getConfig().getString("config.kits." + ac + ".lore")));
 			}
 
 			c++;
 		}
 
 		iconm.open(Bukkit.getPlayerExact(p));
+	}
+
+	public void updateSuperSigns(String arena, String text, ItemStack item) {
+		if ((signmaker != null) && (getArenaSuperSigns(arena) > 0)) {
+			final String arenaname = arena;
+			final String signtext = ChatColor.stripColor(text);
+			final ItemStack stack = item;
+			Bukkit.getServer().getScheduler().runTask(m, new Runnable() {
+				public void run() {
+					for (int x = 1; x < (getArenaSuperSigns(arenaname) + 1); x++) {
+						String signname = "colormatch_" + arenaname + x;
+						TextSign sign = signmaker.getSign(signname);
+						if (sign != null) {
+							if (stack != null)
+								sign.setMaterial(stack.getData());
+							sign.setText(signtext);
+							sign.redraw();
+						}
+					}
+				}
+			});
+		}
+	}
+	
+	public String ct(String text) {
+		return ChatColor.translateAlternateColorCodes('&', text);
 	}
 
 }

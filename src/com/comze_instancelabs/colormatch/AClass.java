@@ -1,5 +1,6 @@
 package com.comze_instancelabs.colormatch;
 
+import org.bukkit.ChatColor;
 import org.bukkit.potion.PotionEffect;
 
 public class AClass {
@@ -10,7 +11,7 @@ public class AClass {
 	
 	public AClass(Main m, String name, PotionEffect[] pot){
 		this.m = m;
-		this.name = name.replaceAll("&", "§");
+		this.name = ChatColor.translateAlternateColorCodes('&', name);
 		this.potioneffect = pot;
 	}
 }

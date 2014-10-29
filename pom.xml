@@ -76,6 +76,13 @@
         </exclusion>
       </exclusions>
     </dependency>
+
+    <!-- Used to update the "colour name" SuperSigns -->
+    <dependency>
+      <groupId>au.com.addstar</groupId>
+      <artifactId>SuperSigns</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>
