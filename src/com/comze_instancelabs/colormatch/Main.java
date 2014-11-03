@@ -10,7 +10,6 @@ import java.util.Random;
 
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-
 import au.com.addstar.signmaker.*;
 
 import org.apache.commons.lang.StringUtils;
@@ -807,8 +806,8 @@ public class Main extends JavaPlugin implements Listener {
 		if (arenap_.containsKey(event.getPlayer().getName())) {
 			final String arena = arenap.get(event.getPlayer());
 			if (lost.containsKey(event.getPlayer())) {
-				// Player did not win
-				Location l = getSpawn(lost.get(event.getPlayer()));
+				// Player did not win.. keep them in the spectator area
+				Location l = getSpawn(arena);
 				final Location spectatorlobby = new Location(l.getWorld(), l.getBlockX(), l.getBlockY() + getArenaSpectateHeight(arena), l.getBlockZ());
 				if (event.getPlayer().getLocation().getBlockY() < spectatorlobby.getBlockY() || event.getPlayer().getLocation().getBlockY() > spectatorlobby.getBlockY()) {
 					final Player p = event.getPlayer();
@@ -837,15 +836,17 @@ public class Main extends JavaPlugin implements Listener {
 					}*/
 				}
 			} else {
-				if (event.getPlayer().getLocation().getBlockY() < getSpawn(arena).getBlockY() - getArenaFallDepth(arena)) {
-					// Player has fallen
+				Location l = getSpawn(arena);
+				if (event.getPlayer().getLocation().getBlockY() < l.getBlockY() - getArenaFallDepth(arena)) {
+					// Player has fallen, make them a spectator
+					final Location spectatorlobby = new Location(l.getWorld(), l.getBlockX(), l.getBlockY() + getArenaSpectateHeight(arena), l.getBlockZ());
 					lost.put(event.getPlayer(), arenap.get(event.getPlayer()));
 					final Player p__ = event.getPlayer();
 					Bukkit.getScheduler().runTaskLater(this, new Runnable() {
 						public void run() {
 							try {
 								Location l = getSpawn(arena);
-								p__.teleport(new Location(l.getWorld(), l.getBlockX(), l.getBlockY() + getArenaSpectateHeight(arena), l.getBlockZ()));
+								p__.teleport(spectatorlobby);
 								p__.setAllowFlight(true);
 								p__.setFlying(true);
 							} catch (Exception e) {
@@ -1111,7 +1112,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 		
 		if (count_ == 0) {
-			updateSuperSigns(arena, "Waiting", new ItemStack(Material.STAINED_CLAY));
+			updateSuperSigns(arena, "Waiting", new ItemStack(Material.STAINED_CLAY, 1, DyeColor.LIME.getData()));
 		}
 
 		// continue
@@ -1151,7 +1152,7 @@ public class Main extends JavaPlugin implements Listener {
 						ingame.put(arena, false);
 					}
 					if (!ingame.get(arena)) {
-						updateSuperSigns(arena, "", null);
+						//updateSuperSigns(arena, "", null);
 						start(arena);
 					}
 				}
@@ -1666,7 +1667,7 @@ public class Main extends JavaPlugin implements Listener {
 		}
 
 		// Reset super signs to the "idle" message
-		updateSuperSigns(arena, getArenaIdleMessage(arena), new ItemStack(Material.STAINED_CLAY));
+		updateSuperSigns(arena, getArenaIdleMessage(arena), new ItemStack(Material.STAINED_CLAY, 1, DyeColor.RED.getData()));
 
 		// runs all that stuff later, that fixes the
 		// "players are stuck in arena" bug!
@@ -1922,7 +1923,7 @@ public class Main extends JavaPlugin implements Listener {
 		if (!getConfig().isSet(arena + ".spectate_height")) {
 			setArenaSpectateHeight(arena, 20);
 		}
-		return getConfig().getInt(arena + ".min_players");
+		return getConfig().getInt(arena + ".spectate_height");
 	}
 
 	public void setArenaSpectateHeight(String arena, int height) {
