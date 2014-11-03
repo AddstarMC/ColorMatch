@@ -1233,7 +1233,7 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	// COPIED FROM MINIGAMES PARTY
-	public static void setup(Location start, Main main, String name_) {
+	public void setup(Location start, Main main, String name_) {
 		int x = start.getBlockX() - 32;
 		int y = start.getBlockY();
 		int y_ = start.getBlockY() - 7;
