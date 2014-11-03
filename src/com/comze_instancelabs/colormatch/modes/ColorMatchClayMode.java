@@ -18,7 +18,7 @@ public class ColorMatchClayMode {
 	
 	
 	public void setup(Location start, Main main, String name_) {
-		reset(start);
+		reset(start, true);
 	}
 	
 	public static void getAll(Location start) {
@@ -44,6 +44,10 @@ public class ColorMatchClayMode {
 	}
 
 	public void reset(final Location start) {
+		reset(start, false);
+	}
+
+	public void reset(final Location start, boolean resetfloor) {
 		int x = start.getBlockX() - 32;
 		int y = start.getBlockY();
 		int y_ = start.getBlockY() - 4;
@@ -64,10 +68,12 @@ public class ColorMatchClayMode {
 				for (int i_ = 0; i_ < 4; i_++) {
 					for (int j_ = 0; j_ < 4; j_++) {
 						Block b = start.getWorld().getBlockAt(new Location(start.getWorld(), x_ + i_, y, z_ + j_));
-						Block b_ = start.getWorld().getBlockAt(new Location(start.getWorld(), x_ + i_, y_, z_ + j_));
-						b_.setType(Material.GLOWSTONE);
 						b.setType(Material.STAINED_CLAY);
 						b.setData(m.colors.get(current).getData());
+						if (resetfloor) {
+							Block b_ = start.getWorld().getBlockAt(new Location(start.getWorld(), x_ + i_, y_, z_ + j_));
+							b_.setType(Material.GLOWSTONE);
+						}
 					}
 				}
 			}
