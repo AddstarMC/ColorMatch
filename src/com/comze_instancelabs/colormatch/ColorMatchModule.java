@@ -142,7 +142,7 @@ public class ColorMatchModule extends MinigameModule {
 	}
 	
 	public GameBoard getGame() {
-		if (!getMinigame().getMechanicName().equals("ColorMatch"))
+		if (!getMinigame().getMechanicName().equals("colormatch"))
 			return null;
 		
 		if (!hasInitted && game != null) {

@@ -16,6 +16,7 @@ import au.com.mineauz.minigames.events.StartMinigameEvent;
 import au.com.mineauz.minigames.gametypes.MinigameType;
 import au.com.mineauz.minigames.mechanics.GameMechanicBase;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.MinigameState;
 import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 
 public class ColorMatchMechanic extends GameMechanicBase {
@@ -41,6 +42,9 @@ public class ColorMatchMechanic extends GameMechanicBase {
 		Player player = event.getPlayer();
 		GameBoard game = getGame(player);
 		if (game == null)
+			return;
+		
+		if (game.getMinigame().getState() != MinigameState.STARTED)
 			return;
 		
 		if (game.isSpectator(player)) {
@@ -120,6 +124,11 @@ public class ColorMatchMechanic extends GameMechanicBase {
 
 	@Override
 	public void quitMinigame(Minigame minigame, MinigamePlayer player, boolean forced) {
+		GameBoard game = getGame(minigame);
+		if (game == null)
+			return;
+		
+		game.leaveArena(player.getPlayer());
 	}
 
 	@Override
