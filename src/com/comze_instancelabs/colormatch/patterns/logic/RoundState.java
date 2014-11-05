@@ -27,7 +27,7 @@ public class RoundState extends TimerState {
 		
 		float percent = (System.currentTimeMillis() - startTime) / (float)(endTime - startTime);
 		for(MinigamePlayer player : game.getMinigame().getPlayers()) {
-			player.getPlayer().setExp(percent);
+			player.getPlayer().setExp(1 - percent);
 			
 			if ((lastPercent < 0.333f && percent >= 0.333f) ||
 				(lastPercent < 0.666f && percent >= 0.666f) ||
@@ -35,6 +35,8 @@ public class RoundState extends TimerState {
 			{
 				player.getPlayer().playSound(player.getLocation(), Sound.ORB_PICKUP, 1, 0);
 			}
+			
+			lastPercent = percent;
 		}
 	}
 	
