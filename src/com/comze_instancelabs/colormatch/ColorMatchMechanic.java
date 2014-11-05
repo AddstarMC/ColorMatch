@@ -3,10 +3,13 @@ package com.comze_instancelabs.colormatch;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerMoveEvent;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.events.StartMinigameEvent;
@@ -67,7 +70,7 @@ public class ColorMatchMechanic extends GameMechanicBase {
 	
 	@Override
 	public String getMechanic() {
-		return "ColorMatch";
+		return "colormatch";
 	}
 
 	@Override
@@ -75,8 +78,27 @@ public class ColorMatchMechanic extends GameMechanicBase {
 		return EnumSet.of(MinigameType.MULTIPLAYER);
 	}
 
+	private void send(MinigamePlayer player, String message) {
+		if (player == null) {
+			Bukkit.getConsoleSender().sendMessage(message);
+		} else {
+			player.sendMessage(message);
+		}
+	}
+	
 	@Override
 	public boolean checkCanStart(Minigame minigame, MinigamePlayer player) {
+		GameBoard game = getGame(minigame);
+		if (game == null) {
+			send(player, ChatColor.RED + "ColorMatch arena not setup. Use /cm setup " + minigame.getName(false) + " to set it up.");
+			return false;
+		}
+		
+		if (game.getSpawn() == null) {
+			send(player, ChatColor.RED + "Board position is not set");
+			return false;
+		}
+		
 		// TODO: Check state
 		return true;
 	}

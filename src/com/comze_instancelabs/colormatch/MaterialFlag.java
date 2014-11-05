@@ -71,7 +71,10 @@ public class MaterialFlag extends Flag<Material> {
 				
 				@Override
 				public String getValue() {
-					return getName(getFlag());
+					Material mat = getFlag();
+					if (mat == null)
+						mat = getDefaultFlag();
+					return getName(mat);
 				}
 			};
 		}

@@ -90,13 +90,13 @@ public class ColorMatchModule extends MinigameModule {
 	@Override
 	public boolean displayMechanicSettings(Menu previous) {
 		Menu menu = new Menu(6, getMinigame().getName(false), previous.getViewer());
-		menu.addItem(difficulty.getMenuItem("Difficulty", Material.DIAMOND_SWORD, Arrays.asList("The difficulty of the board. The only valid values are 0-3 where 0 is the easiest. This only affects the time available to move."), 0, 3));
-		menu.addItem(fallDepth.getMenuItem("Fall Depth", Material.FEATHER, Arrays.asList("The distance below the spawn that a player must pass below to be considered off the board"), 1, 255));
+		menu.addItem(difficulty.getMenuItem("Difficulty", Material.DIAMOND_SWORD, Arrays.asList("The difficulty of the board. ", "0 is the easiest and 3, the hardest.", "This only effects the time available to move."), 0, 3));
+		menu.addItem(fallDepth.getMenuItem("Fall Depth", Material.FEATHER, Arrays.asList("The distance below the spawn ", "that a player must pass below to ", "be considered off the board"), 1, 255));
 		menu.addItem(floorDepth.getMenuItem("Floor Depth", Material.BRICK, 1, 255));
-		menu.addItem(material.getMenuItem("Board Material", Material.STAINED_CLAY, Arrays.asList("The base material the board is made of. The colour of that material will be randomized")));
-		menu.addItem(spectatorHeight.getMenuItem("Spectate Height", Material.GLASS, Arrays.asList("The height above the board that spectators will hover at")));
-		menu.addItem(superSigns.getMenuItem("Super Sign Count", Material.SIGN, Arrays.asList("The number of super signs this game will attempt to use. They must be named as such 'colormatch_<minigame><#>' where <minigame> is the name of the minigame and <#> is the number of the sign starting from 1"), 0, 10));
-		menu.addItem(idleMessage.getMenuItem("Idle Message", Material.BOOK, Arrays.asList("The message super signs will display after the game")));
+		menu.addItem(material.getMenuItem("Board Material", Material.STAINED_CLAY, Arrays.asList("The base material the board", "is made of. The colour ", "of that material will be randomized")));
+		menu.addItem(spectatorHeight.getMenuItem("Spectate Height", Material.GLASS, Arrays.asList("The height above the board", "that spectators will hover at")));
+		menu.addItem(superSigns.getMenuItem("Super Sign Count", Material.SIGN, Arrays.asList("The number of super signs", "this game will attempt to use.", "They must be named as such ", "'colormatch_<minigame><#>'", "where <minigame> is the name ", "of the minigame and ", "<#> is the number of the sign ", "starting from 1"), 0, 10));
+		menu.addItem(idleMessage.getMenuItem("Idle Message", Material.BOOK, Arrays.asList("The message super signs", "will display after the game")));
 		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.DIODE, 0, Integer.MAX_VALUE));
 		
 		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), menu.getSize() - 9);

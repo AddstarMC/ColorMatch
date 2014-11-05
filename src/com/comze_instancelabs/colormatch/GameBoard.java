@@ -11,11 +11,13 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 
 import com.comze_instancelabs.colormatch.patterns.PatternBase;
+import com.comze_instancelabs.colormatch.patterns.SquaresPattern;
 import com.comze_instancelabs.colormatch.patterns.logic.PreRoundState;
 import com.comze_instancelabs.colormatch.patterns.logic.StateEngine;
 
@@ -24,7 +26,6 @@ public class GameBoard {
 	
 	private Location spawn;
 	
-	private Material material;
 	private PatternBase currentPattern;
 	private DyeColor currentColour;
 	private int round;
@@ -41,6 +42,9 @@ public class GameBoard {
 		engine = new StateEngine<GameBoard>(plugin);
 		
 		spectators = new LinkedList<Player>();
+		
+		// TODO: Note this is for testing purposes. The pattern will be set by defined params at a later date
+		currentPattern = new SquaresPattern(8, 8);
 	}
 	
 	public void initialize(ColorMatchModule module) {
@@ -76,7 +80,7 @@ public class GameBoard {
 	
 	public void generate() {
 		clear();
-		currentPattern.placeAt(getBoardOrigin(), material, activeBlocks, random);
+		currentPattern.placeAt(getBoardOrigin(), module.getBoardMaterial(), activeBlocks, random);
 	}
 	
 	public void broadcast(String message) {
@@ -160,12 +164,8 @@ public class GameBoard {
 		return spawn;
 	}
 	
-	public void setMaterial(Material material) {
-		this.material = material;
-	}
-	
 	public Material getMaterial() {
-		return material;
+		return module.getBoardMaterial();
 	}
 	
 	public Minigame getMinigame() {
