@@ -1,7 +1,5 @@
 package com.comze_instancelabs.colormatch.patterns.logic;
 
-import java.util.List;
-
 import org.bukkit.entity.Player;
 
 import com.comze_instancelabs.colormatch.GameBoard;
@@ -20,11 +18,10 @@ public class BetweenRoundState extends TimerState {
 	}
 
 	private void checkEnd(StateEngine<GameBoard> engine, GameBoard game) {
-		List<Player> remaining = game.getRemainingPlayers(); 
-		if (remaining.size() == 1)
+		if (game.getRemainingCount() == 1)
 			engine.setState(new PostGame());
-		else if (remaining.size() == 0)
-			engine.abortState(new WaitingForPlayers());
+		else if (game.getRemainingCount() == 0)
+			game.stop();
 	}
 	
 	@Override
@@ -35,7 +32,6 @@ public class BetweenRoundState extends TimerState {
 			
 			checkEnd(engine, game);
 		} else if (name.equals("leave")) {
-			Player player = (Player)data;
 			checkEnd(engine, game);
 		}
 	}

@@ -1,9 +1,8 @@
 package com.comze_instancelabs.colormatch.patterns.logic;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.entity.Player;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
 
 import com.comze_instancelabs.colormatch.GameBoard;
 
@@ -17,11 +16,19 @@ public class PostGame extends TimerState {
 	@Override
 	protected void onNotifyTimeLeft(long remaining,	StateEngine<GameBoard> engine, GameBoard game) {
 		if (remaining == 0) {
-			List<Player> players = new ArrayList<Player>(game.getPlayers());
-			for (Player player : players) {
-				game.leaveArena(player);
+			ArrayList<MinigamePlayer> winners = new ArrayList<MinigamePlayer>(game.getRemainingCount());
+			ArrayList<MinigamePlayer> losers = new ArrayList<MinigamePlayer>(game.getMinigame().getPlayers().size()-game.getRemainingCount());
+			
+			for (MinigamePlayer player : game.getMinigame().getPlayers()) {
+				if (game.isSpectator(player.getPlayer())) {
+					losers.add(player);
+				} else {
+					winners.add(player);
+				}
 			}
-			engine.setState(new WaitingForPlayers());
+			
+			Minigames.plugin.pdata.endMinigame(game.getMinigame(), winners, losers);
+			game.stop();
 		}
 	}
 

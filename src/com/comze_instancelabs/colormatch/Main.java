@@ -11,6 +11,8 @@ import java.util.Random;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import au.com.addstar.signmaker.*;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.mechanics.GameMechanics;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -78,6 +80,8 @@ public class Main extends JavaPlugin implements Listener {
 
 	public static Economy econ = null;
 	public static SignMakerPlugin signmaker = null;
+	
+	private HashMap<String, GameBoard> games = new HashMap<String, GameBoard>();
 
 	public static HashMap<String, Boolean> ingame = new HashMap<String, Boolean>(); // arena -> whether arena is ingame or not
 	public static HashMap<String, BukkitTask> tasks = new HashMap<String, BukkitTask>(); // arena -> task/ task
@@ -143,49 +147,11 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		getServer().getPluginManager().registerEvents(this, this);
 
-		getConfig().options().header(ct("I recommend you to set auto_updating to true for possible future bugfixes. If use_economy is set to false, the winner will get the item reward."));
-		getConfig().addDefault("config.auto_updating", true);
-		getConfig().addDefault("config.rounds_per_game", 10);
-		getConfig().addDefault("config.start_countdown", 5);
-		getConfig().addDefault("config.default_max_players", 4);
-		getConfig().addDefault("config.default_min_players", 3);
-		getConfig().addDefault("config.use_economy_reward", true);
-		getConfig().addDefault("config.money_reward_per_game", 30);
-		getConfig().addDefault("config.itemid", 264); // diamond
-		getConfig().addDefault("config.itemamount", 1);
-		getConfig().addDefault("config.use_command_reward", false);
-		getConfig().addDefault("config.command_reward", "pex user <player> group set ColorPro");
-		getConfig().addDefault("config.start_announcement", false);
-		getConfig().addDefault("config.winner_announcement", false);
-		getConfig().addDefault("config.game_on_join", false);
-		getConfig().addDefault("config.bling_sounds", false);
+		Minigames.plugin.mdata.addModule(ColorMatchModule.class);
+		GameMechanics.addGameMechanic(new ColorMatchMechanic());
+		
+		loadDefaults();
 
-		getConfig().addDefault("config.kits.default.name", "default");
-		getConfig().addDefault("config.kits.default.potioneffect", "SPEED");
-		getConfig().addDefault("config.kits.default.amplifier", 1);
-		getConfig().addDefault("config.kits.default.gui_item_id", 341);
-		getConfig().addDefault("config.kits.default.lore", ct("&2The default class."));
-
-		getConfig().addDefault("strings.saved.arena", ct("&aSuccessfully saved arena."));
-		getConfig().addDefault("strings.saved.lobby", ct("&aSuccessfully saved lobby."));
-		getConfig().addDefault("strings.saved.setup", ct("&6Successfully saved spawn. Now setting up, might &2lag&6 a little bit."));
-		getConfig().addDefault("strings.removed_arena", ct("&cSuccessfully removed arena."));
-		getConfig().addDefault("strings.not_in_arena", ct("&cYou don't seem to be in an arena right now."));
-		getConfig().addDefault("strings.config_reloaded", ct("&6Successfully reloaded config."));
-		getConfig().addDefault("strings.arena_is_ingame", ct("&cThe arena appears to be ingame."));
-		getConfig().addDefault("strings.arena_invalid", ct("&cThe arena appears to be invalid."));
-		getConfig().addDefault("strings.arena_invalid_sign", ct("&cThe arena appears to be invalid, because a join sign is missing."));
-		getConfig().addDefault("strings.arena_invalid_component", ct("&2The arena appears to be invalid (missing components or misstyped arena)!"));
-		getConfig().addDefault("strings.you_fell", ct("&3You fell! Type &6/cm leave &3to leave."));
-		getConfig().addDefault("strings.you_won", ct("&aYou won this round, awesome man! Here, enjoy your reward."));
-		getConfig().addDefault("strings.starting_in", ct("&aStarting in &6"));
-		getConfig().addDefault("strings.starting_in2", ct("&a seconds."));
-		getConfig().addDefault("strings.arena_full", ct("&cThis arena is full!"));
-		getConfig().addDefault("strings.starting_announcement", ct("&aStarting a new ColorMatch Game in &6"));
-		getConfig().addDefault("strings.started_announcement", ct("&aA new ColorMatch Round has started!"));
-		getConfig().addDefault("strings.winner_announcement", ct("&6<player> &awon the game on arena &6<arena>!"));
-
-		getConfig().options().copyDefaults(true);
 		if (getConfig().isSet("config.min_players")) {
 			getConfig().set("config.min_players", null);
 		}
@@ -242,6 +208,52 @@ public class Main extends JavaPlugin implements Listener {
 			}
 		}
 	}
+	
+	private void loadDefaults() {
+		getConfig().options().header(ct("I recommend you to set auto_updating to true for possible future bugfixes. If use_economy is set to false, the winner will get the item reward."));
+		getConfig().addDefault("config.auto_updating", true);
+		getConfig().addDefault("config.rounds_per_game", 10);
+		getConfig().addDefault("config.start_countdown", 5);
+		getConfig().addDefault("config.default_max_players", 4);
+		getConfig().addDefault("config.default_min_players", 3);
+		getConfig().addDefault("config.use_economy_reward", true);
+		getConfig().addDefault("config.money_reward_per_game", 30);
+		getConfig().addDefault("config.itemid", 264); // diamond
+		getConfig().addDefault("config.itemamount", 1);
+		getConfig().addDefault("config.use_command_reward", false);
+		getConfig().addDefault("config.command_reward", "pex user <player> group set ColorPro");
+		getConfig().addDefault("config.start_announcement", false);
+		getConfig().addDefault("config.winner_announcement", false);
+		getConfig().addDefault("config.game_on_join", false);
+		getConfig().addDefault("config.bling_sounds", false);
+
+		getConfig().addDefault("config.kits.default.name", "default");
+		getConfig().addDefault("config.kits.default.potioneffect", "SPEED");
+		getConfig().addDefault("config.kits.default.amplifier", 1);
+		getConfig().addDefault("config.kits.default.gui_item_id", 341);
+		getConfig().addDefault("config.kits.default.lore", ct("&2The default class."));
+
+		getConfig().addDefault("strings.saved.arena", ct("&aSuccessfully saved arena."));
+		getConfig().addDefault("strings.saved.lobby", ct("&aSuccessfully saved lobby."));
+		getConfig().addDefault("strings.saved.setup", ct("&6Successfully saved spawn. Now setting up, might &2lag&6 a little bit."));
+		getConfig().addDefault("strings.removed_arena", ct("&cSuccessfully removed arena."));
+		getConfig().addDefault("strings.not_in_arena", ct("&cYou don't seem to be in an arena right now."));
+		getConfig().addDefault("strings.config_reloaded", ct("&6Successfully reloaded config."));
+		getConfig().addDefault("strings.arena_is_ingame", ct("&cThe arena appears to be ingame."));
+		getConfig().addDefault("strings.arena_invalid", ct("&cThe arena appears to be invalid."));
+		getConfig().addDefault("strings.arena_invalid_sign", ct("&cThe arena appears to be invalid, because a join sign is missing."));
+		getConfig().addDefault("strings.arena_invalid_component", ct("&2The arena appears to be invalid (missing components or misstyped arena)!"));
+		getConfig().addDefault("strings.you_fell", ct("&3You fell! Type &6/cm leave &3to leave."));
+		getConfig().addDefault("strings.you_won", ct("&aYou won this round, awesome man! Here, enjoy your reward."));
+		getConfig().addDefault("strings.starting_in", ct("&aStarting in &6"));
+		getConfig().addDefault("strings.starting_in2", ct("&a seconds."));
+		getConfig().addDefault("strings.arena_full", ct("&cThis arena is full!"));
+		getConfig().addDefault("strings.starting_announcement", ct("&aStarting a new ColorMatch Game in &6"));
+		getConfig().addDefault("strings.started_announcement", ct("&aA new ColorMatch Round has started!"));
+		getConfig().addDefault("strings.winner_announcement", ct("&6<player> &awon the game on arena &6<arena>!"));
+		
+		getConfig().options().copyDefaults(true);
+	}
 
 	@Override
 	public void onDisable() {
@@ -289,25 +301,7 @@ public class Main extends JavaPlugin implements Listener {
 		winner_announcement = getConfig().getBoolean("config.winner_announcement");
 		bling_sounds = getConfig().getBoolean("config.bling_sounds");
 
-		saved_arena = ct(getConfig().getString("strings.saved.arena"));
-		saved_lobby = ct(getConfig().getString("strings.saved.lobby"));
-		saved_setup = ct(getConfig().getString("strings.saved.setup"));
-		saved_mainlobby = ct("&aSuccessfully saved main lobby");
-		not_in_arena = ct(getConfig().getString("strings.not_in_arena"));
-		reloaded = ct(getConfig().getString("strings.config_reloaded"));
-		arena_ingame = ct(getConfig().getString("strings.arena_is_ingame"));
-		arena_invalid = ct(getConfig().getString("strings.arena_invalid"));
-		arena_invalid_sign = ct(getConfig().getString("strings.arena_invalid_sign"));
-		you_fell = ct(getConfig().getString("strings.you_fell"));
-		arena_invalid_component = ct(getConfig().getString("strings.arena_invalid_component"));
-		you_won = ct(getConfig().getString("strings.you_won"));
-		starting_in = ct(getConfig().getString("strings.starting_in"));
-		starting_in2 = ct(getConfig().getString("strings.starting_in2"));
-		arena_full = ct(getConfig().getString("strings.arena_full"));
-		starting = ct(getConfig().getString("strings.starting_announcement"));
-		started = ct(getConfig().getString("strings.started_announcement"));
-		removed_arena = ct(getConfig().getString("strings.removed_arena"));
-		winner_an = ct(getConfig().getString("strings.winner_announcement"));
+		Messages.loadValues(getConfig());
 	}
 
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -1433,7 +1427,7 @@ public class Main extends JavaPlugin implements Listener {
 						item = new ItemStack(Material.WOOL, 1, dc.getData());
 					}
 					ItemMeta im = item.getItemMeta();
-					im.setDisplayName(dyeToChat(dc) + "" + ChatColor.BOLD + dc.name());
+					im.setDisplayName(Utilities.dyeToChat(dc) + "" + ChatColor.BOLD + dc.name());
 					item.setItemMeta(im);
 
 					// Update SuperSigns
@@ -1768,33 +1762,6 @@ public class Main extends JavaPlugin implements Listener {
 				}
 			}
 		}
-	}
-
-	private static Map<DyeColor, ChatColor> dyeChatMap;
-	static {
-		dyeChatMap = Maps.newHashMap();
-		dyeChatMap.put(DyeColor.BLACK, ChatColor.DARK_GRAY);
-		dyeChatMap.put(DyeColor.BLUE, ChatColor.DARK_BLUE);
-		dyeChatMap.put(DyeColor.BROWN, ChatColor.GOLD);
-		dyeChatMap.put(DyeColor.CYAN, ChatColor.AQUA);
-		dyeChatMap.put(DyeColor.GRAY, ChatColor.GRAY);
-		dyeChatMap.put(DyeColor.GREEN, ChatColor.DARK_GREEN);
-		dyeChatMap.put(DyeColor.LIGHT_BLUE, ChatColor.BLUE);
-		dyeChatMap.put(DyeColor.LIME, ChatColor.GREEN);
-		dyeChatMap.put(DyeColor.MAGENTA, ChatColor.LIGHT_PURPLE);
-		dyeChatMap.put(DyeColor.ORANGE, ChatColor.GOLD);
-		dyeChatMap.put(DyeColor.PINK, ChatColor.LIGHT_PURPLE);
-		dyeChatMap.put(DyeColor.PURPLE, ChatColor.DARK_PURPLE);
-		dyeChatMap.put(DyeColor.RED, ChatColor.DARK_RED);
-		dyeChatMap.put(DyeColor.SILVER, ChatColor.GRAY);
-		dyeChatMap.put(DyeColor.WHITE, ChatColor.WHITE);
-		dyeChatMap.put(DyeColor.YELLOW, ChatColor.YELLOW);
-	}
-
-	public static ChatColor dyeToChat(DyeColor dclr) {
-		if (dyeChatMap.containsKey(dclr))
-			return dyeChatMap.get(dclr);
-		return ChatColor.MAGIC;
 	}
 
 	public void updateScoreboard(String arena) {

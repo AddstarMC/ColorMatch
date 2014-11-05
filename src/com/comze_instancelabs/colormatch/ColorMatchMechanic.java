@@ -1,0 +1,111 @@
+package com.comze_instancelabs.colormatch;
+
+import java.util.EnumSet;
+import java.util.List;
+
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerMoveEvent;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.events.StartMinigameEvent;
+import au.com.mineauz.minigames.gametypes.MinigameType;
+import au.com.mineauz.minigames.mechanics.GameMechanicBase;
+import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.minigame.modules.MinigameModule;
+
+public class ColorMatchMechanic extends GameMechanicBase {
+	
+	private GameBoard getGame(Player player) {
+		MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+		if (mplayer.isInMinigame()) {
+			return getGame(mplayer.getMinigame());
+		}
+		
+		return null;
+	}
+	
+	private GameBoard getGame(Minigame minigame) {
+		ColorMatchModule module = ColorMatchModule.getModule(minigame);
+		if (module != null)
+			return module.getGame();
+		return null;
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		Player player = event.getPlayer();
+		GameBoard game = getGame(player);
+		if (game == null)
+			return;
+		
+		if (game.isSpectator(player)) {
+			Location spectateSpawn = game.getSpectatorSpawn();
+			
+			if (player.getLocation().getY() < spectateSpawn.getY() || player.getLocation().getY() > spectateSpawn.getY()) {
+				Location newLoc = player.getLocation();
+				newLoc.setY(spectateSpawn.getY());
+				player.teleport(newLoc);
+			}
+		} else {
+			Location spawn = game.getPlayerSpawn();
+			if (player.getLocation().getY() < spawn.getY() - game.getModule().getFallDepth()) {
+				game.killPlayer(player);
+			}
+		}
+	}
+	
+	@EventHandler
+	private void onMinigameStart(StartMinigameEvent event) {
+		GameBoard board = getGame(event.getMinigame());
+		if (board == null)
+			return;
+		
+		board.start();
+	}
+	
+	@Override
+	public String getMechanic() {
+		return "ColorMatch";
+	}
+
+	@Override
+	public EnumSet<MinigameType> validTypes() {
+		return EnumSet.of(MinigameType.MULTIPLAYER);
+	}
+
+	@Override
+	public boolean checkCanStart(Minigame minigame, MinigamePlayer player) {
+		// TODO: Check state
+		return true;
+	}
+
+	@Override
+	public MinigameModule displaySettings(Minigame minigame) {
+		return ColorMatchModule.getModule(minigame);
+	}
+
+	@Override
+	public void startMinigame(Minigame minigame, MinigamePlayer player) {} // Only for global minigames
+
+	@Override
+	public void stopMinigame(Minigame minigame, MinigamePlayer player) {} // Only for global minigames
+
+	@Override
+	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	}
+
+	@Override
+	public void quitMinigame(Minigame minigame, MinigamePlayer player, boolean forced) {
+	}
+
+	@Override
+	public void endMinigame(Minigame minigame, List<MinigamePlayer> winners, List<MinigamePlayer> losers) {
+		GameBoard board = getGame(minigame);
+		if (board == null)
+			return;
+		
+		board.stop();
+	}
+}

@@ -1,36 +1,27 @@
 package com.comze_instancelabs.colormatch;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
 import org.bukkit.DyeColor;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.potion.PotionEffect;
+import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.Minigames;
+import au.com.mineauz.minigames.minigame.Minigame;
 
 import com.comze_instancelabs.colormatch.patterns.PatternBase;
-import com.comze_instancelabs.colormatch.patterns.logic.StartCountdown;
+import com.comze_instancelabs.colormatch.patterns.logic.PreRoundState;
 import com.comze_instancelabs.colormatch.patterns.logic.StateEngine;
-import com.comze_instancelabs.colormatch.patterns.logic.WaitingForPlayers;
 
 public class GameBoard {
-	private static HashMap<Player, GameBoard> allGames = new HashMap<Player, GameBoard>();
-	
-	public static GameBoard getGame(Player player) {
-		return allGames.get(player);
-	}
-	
 	private Random random;
 	
-	private ArenaSettings settings;
 	private Location spawn;
 	
 	private Material material;
@@ -38,24 +29,22 @@ public class GameBoard {
 	private DyeColor currentColour;
 	private int round;
 	
-	private List<Player> allPlayers;
-	private HashMap<Player, PlayerData> playerData;
 	private List<Player> spectators;
 	
 	private StateEngine<GameBoard> engine;
 	private List<Block> activeBlocks;
+	private ColorMatchModule module;
 	
-	public GameBoard(Plugin plugin, ArenaSettings settings) {
+	public GameBoard(Plugin plugin) {
 		random = new Random();
 		activeBlocks = new ArrayList<Block>();
 		engine = new StateEngine<GameBoard>(plugin);
-		this.settings = settings;
 		
-		allPlayers = new LinkedList<Player>();
-		playerData = new HashMap<Player, PlayerData>();
 		spectators = new LinkedList<Player>();
-		
-		engine.start(new WaitingForPlayers(), this);
+	}
+	
+	public void initialize(ColorMatchModule module) {
+		this.module = module;
 	}
 	
 	public void clear() {
@@ -82,7 +71,7 @@ public class GameBoard {
 	}
 	
 	public Location getSpectatorSpawn() {
-		return new Location(spawn.getWorld(), spawn.getX(), spawn.getY() + settings.getArenaSpectateHeight(), spawn.getZ());
+		return new Location(spawn.getWorld(), spawn.getX(), spawn.getY() + module.getSpectateHeight(), spawn.getZ());
 	}
 	
 	public void generate() {
@@ -91,7 +80,7 @@ public class GameBoard {
 	}
 	
 	public void broadcast(String message) {
-		for (Player player : allPlayers) {
+		for (MinigamePlayer player : module.getMinigame().getPlayers()) {
 			player.sendMessage(message);
 		}
 	}
@@ -100,69 +89,27 @@ public class GameBoard {
 		//TODO: This
 	}
 	
-	public boolean joinArena(Player player) {
-		if (allGames.containsKey(player))
-			return false;
-		
-		if (!(engine.getCurrentState() instanceof WaitingForPlayers) && !(engine.getCurrentState() instanceof StartCountdown)) {
-			player.sendMessage(Messages.arena_ingame);
-			return false;
-		}
-		
-		if (allPlayers.size() >= settings.getArenaMaxPlayers()) {
-			player.sendMessage(Messages.arena_full);
-			return false;
-		}
-		
-		if (allPlayers.isEmpty())
+	public void joinArena(Player player) {
+		if (module.getMinigame().getPlayers().size() == 1)
 			updateSigns("Waiting", DyeColor.LIME);
-		
-		PlayerData data = new PlayerData(player);
-		playerData.put(player, data);
-		
-		allPlayers.add(player);
-		allGames.put(player, this);
-		player.setGameMode(GameMode.SURVIVAL);
-		player.getInventory().clear();
-		player.updateInventory();
-		player.setFoodLevel(20);
-		player.setSaturation(20);
 		
 		player.teleport(getPlayerSpawn());
 		
 		engine.sendEvent("join", player);
-		return true;
 	}
 	
 	public void leaveArena(Player player) {
-		PlayerData data = playerData.remove(player);
-		data.apply(player);
-		
-		for (PotionEffect effect : player.getActivePotionEffects()) {
-			player.removePotionEffect(effect.getType());
-		}
-		
 		spectators.remove(player);
-		allPlayers.remove(player);
-		allGames.remove(player);
-		
-		player.setAllowFlight(player.getGameMode() == GameMode.CREATIVE);
-		player.setFlying(false);
-		
-		// TODO: Do rewards
-		
 		engine.sendEvent("leave", player);
 	}
 	
 	public void setSpectator(Player player) {
-		if (!allPlayers.contains(player))
-			return;
-		
 		spectators.add(player);
 		
-		player.teleport(getSpectatorSpawn());
-		player.setAllowFlight(true);
+		MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+		mplayer.setCanFly(true);
 		player.setFlying(true);
+		mplayer.teleport(getSpectatorSpawn());
 	}
 	
 	public boolean isSpectator(Player player) {
@@ -174,13 +121,11 @@ public class GameBoard {
 	}
 	
 	public void start() {
-		if (engine.getCurrentState() instanceof WaitingForPlayers) {
-			engine.setState(new StartCountdown());
-		}
+		engine.start(new PreRoundState(), this);
 	}
 	
 	public void stop() {
-		// TODO: this maybe
+		engine.end();
 	}
 	
 	public Random getRandom() {
@@ -223,25 +168,19 @@ public class GameBoard {
 		return material;
 	}
 	
-	public List<Player> getPlayers() {
-		return Collections.unmodifiableList(allPlayers);
+	public Minigame getMinigame() {
+		return module.getMinigame();
 	}
 	
-	public List<Player> getRemainingPlayers() {
-		ArrayList<Player> players = new ArrayList<Player>(allPlayers);
-		players.removeAll(spectators);
-		return Collections.unmodifiableList(players);
+	public ColorMatchModule getModule() {
+		return module;
 	}
 	
-	public boolean isPlayer(Player player) {
-		return allPlayers.contains(player);
+	public int getRemainingCount() {
+		return module.getMinigame().getPlayers().size() - spectators.size();
 	}
 	
 	public int getRound() {
 		return round;
-	}
-	
-	public ArenaSettings getSettings() {
-		return settings;
 	}
 }
