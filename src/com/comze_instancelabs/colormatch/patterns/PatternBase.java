@@ -45,26 +45,26 @@ public abstract class PatternBase {
 				while(!floodQueue.isEmpty()) {
 					PatternPixel floodPixel = floodQueue.pop();
 					
-					if (!visited.add(pixel))
+					if (!visited.add(floodPixel))
 						continue;
 					
-					group.getPixels().add(pixel);
+					group.getPixels().add(floodPixel);
 					
 					// Pixel to left
-					if (isMatch(getPixel(x-1, y), floodPixel))
-						floodQueue.add(getPixel(x-1, y));
+					if (isMatch(getPixel(floodPixel.offsetX-1, y), floodPixel))
+						floodQueue.add(getPixel(floodPixel.offsetX-1, floodPixel.offsetY));
 					
 					// Pixel to right
-					if (isMatch(getPixel(x+1, y), floodPixel))
-						floodQueue.add(getPixel(x+1, y));
+					if (isMatch(getPixel(floodPixel.offsetX+1, floodPixel.offsetY), floodPixel))
+						floodQueue.add(getPixel(floodPixel.offsetX+1, floodPixel.offsetY));
 					
 					// Pixel to top
-					if (isMatch(getPixel(x, y-1), floodPixel))
-						floodQueue.add(getPixel(x, y-1));
+					if (isMatch(getPixel(floodPixel.offsetX, floodPixel.offsetY-1), floodPixel))
+						floodQueue.add(getPixel(floodPixel.offsetX, floodPixel.offsetY-1));
 					
 					// Pixel to bottom
-					if (isMatch(getPixel(x, y+1), floodPixel))
-						floodQueue.add(getPixel(x, y+1));
+					if (isMatch(getPixel(floodPixel.offsetX, floodPixel.offsetY+1), floodPixel))
+						floodQueue.add(getPixel(floodPixel.offsetX, floodPixel.offsetY+1));
 				}
 				
 				groups.add(group);
@@ -124,6 +124,11 @@ public abstract class PatternBase {
 			
 			return other.offsetX == offsetX && other.offsetY == offsetY && other.material.equals(material);
 		}
+		
+		@Override
+		public String toString() {
+			return String.format("%d,%d", offsetX, offsetY);
+		}
 	}
 	
 	/**
@@ -140,6 +145,7 @@ public abstract class PatternBase {
 			return pixels;
 		}
 		
+		@SuppressWarnings("deprecation")
 		public void placeAt(Location origin, MaterialData material, List<Block> modified) {
 			for (PatternPixel pixel : pixels) {
 				Location pixelLocation = pixel.getLocation(origin);

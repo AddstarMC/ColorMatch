@@ -258,6 +258,9 @@ public class Main extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
+		Minigames.plugin.mdata.removeModule("ColorMatch", ColorMatchModule.class);
+		GameMechanics.removeGameMechanic("colormatch");
+		
 		// check for any running arenas because some sloppy owner just stops the server without checking stuff
 		for (String arena : ingame.keySet()) {
 			if (ingame.get(arena)) {

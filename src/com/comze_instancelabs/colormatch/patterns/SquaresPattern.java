@@ -32,7 +32,7 @@ public class SquaresPattern extends PatternBase {
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				MaterialData mat;
-				if (x + y % 2 == 0)
+				if ((x + y) % 2 == 0)
 					mat = even;
 				else
 					mat = odd;
