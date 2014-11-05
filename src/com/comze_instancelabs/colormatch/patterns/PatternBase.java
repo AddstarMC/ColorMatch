@@ -10,7 +10,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Wool;
 
@@ -147,8 +146,7 @@ public abstract class PatternBase {
 				
 				Block block = pixelLocation.getBlock();
 				block.setType(material.getItemType());
-				BlockState state = block.getState();
-				state.setData(material);
+				block.setData(material.getData());
 				
 				modified.add(block);
 			}

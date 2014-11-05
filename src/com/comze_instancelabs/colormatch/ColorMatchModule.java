@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import au.com.mineauz.minigames.Minigames;
@@ -69,7 +71,10 @@ public class ColorMatchModule extends MinigameModule {
 	@Override
 	public void save(FileConfiguration config) {
 		if (game != null) {
-			config.set("board.location", game.getSpawn());
+			config.set("board.location.world", game.getSpawn().getWorld().getName());
+			config.set("board.location.x", game.getSpawn().getBlockX());
+			config.set("board.location.y", game.getSpawn().getBlockY());
+			config.set("board.location.z", game.getSpawn().getBlockZ());
 		}
 	}
 
@@ -77,7 +82,8 @@ public class ColorMatchModule extends MinigameModule {
 	public void load(FileConfiguration config) {
 		if (config.isConfigurationSection("board")) {
 			game = new GameBoard(Minigames.plugin);
-			game.setSpawn((Location)config.get("board.location"));
+			World world = Bukkit.getWorld(config.getString("board.location.world"));
+			game.setSpawn(new Location(world, config.getInt("board.location.x"), config.getInt("board.location.y"), config.getInt("board.location.z")));
 			game.initialize(this);
 			hasInitted = true;
 		}
@@ -125,6 +131,9 @@ public class ColorMatchModule extends MinigameModule {
 	}
 	
 	public Material getBoardMaterial() {
+		if (material.getFlag() == null) {
+			return material.getDefaultFlag();
+		}
 		return material.getFlag();
 	}
 	
