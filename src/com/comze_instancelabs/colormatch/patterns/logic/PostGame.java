@@ -3,6 +3,8 @@ package com.comze_instancelabs.colormatch.patterns.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.DyeColor;
+
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 
@@ -17,6 +19,7 @@ public class PostGame extends TimerState {
 	public void onStart(StateEngine<GameBoard> engine, GameBoard game) {
 		endTime = System.currentTimeMillis() + 2000;
 		game.generate();
+		game.updateSigns(game.getModule().getIdleMessage(), DyeColor.RED);
 		
 		winners = new ArrayList<MinigamePlayer>(game.getRemainingCount());
 		losers = new ArrayList<MinigamePlayer>(game.getMinigame().getPlayers().size()-game.getRemainingCount());

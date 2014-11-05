@@ -10,8 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 
+import au.com.addstar.signmaker.TextSign;
 import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -89,22 +91,34 @@ public class GameBoard {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void updateSigns(String message, DyeColor colour) {
-		//TODO: This
+		if (Main.signmaker != null) {
+			for (int i = 1; i <= module.getSuperSignCount(); ++i) {
+				String signName = "colormatch_" + getMinigame().getName(false) + i;
+				TextSign sign = Main.signmaker.getSign(signName);
+				if (sign != null) {
+					sign.setMaterial(new MaterialData(getMaterial(), colour.getWoolData()));
+					sign.setText(message);
+					sign.redraw();
+				}
+			}
+		}
 	}
 	
 	public void joinArena(Player player) {
 		if (module.getMinigame().getPlayers().size() == 1)
 			updateSigns("Waiting", DyeColor.LIME);
 		
-		player.teleport(getPlayerSpawn());
-		
-		engine.sendEvent("join", player);
 	}
 	
 	public void leaveArena(Player player) {
 		spectators.remove(player);
-		engine.sendEvent("leave", player);
+		
+		if (engine.isRunning())
+			engine.sendEvent("leave", player);
+		else if (module.getMinigame().getPlayers().size() == 1)
+			updateSigns(module.getIdleMessage(), DyeColor.RED);
 	}
 	
 	public void setSpectator(Player player) {

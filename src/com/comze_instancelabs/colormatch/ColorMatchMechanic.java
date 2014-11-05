@@ -120,6 +120,11 @@ public class ColorMatchMechanic extends GameMechanicBase {
 
 	@Override
 	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+		GameBoard game = getGame(minigame);
+		if (game == null)
+			return;
+		
+		game.joinArena(player.getPlayer());
 	}
 
 	@Override
