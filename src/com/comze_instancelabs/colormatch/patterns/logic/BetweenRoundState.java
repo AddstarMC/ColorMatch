@@ -18,10 +18,8 @@ public class BetweenRoundState extends TimerState {
 	}
 
 	private void checkEnd(StateEngine<GameBoard> engine, GameBoard game) {
-		if (game.getRemainingCount() == 1)
+		if (game.getRemainingCount() <= 1)
 			engine.setState(new PostGame());
-		else if (game.getRemainingCount() == 0)
-			game.stop();
 	}
 	
 	@Override
