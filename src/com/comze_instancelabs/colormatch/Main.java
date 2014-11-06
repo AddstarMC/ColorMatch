@@ -7,6 +7,7 @@ import au.com.addstar.signmaker.*;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
 import au.com.mineauz.minigames.minigame.Minigame;
+import au.com.mineauz.minigames.tool.ToolModes;
 
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
@@ -17,19 +18,25 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comze_instancelabs.colormatch.Util.Metrics;
+import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
 public class Main extends JavaPlugin implements Listener {
 
 	public static final DyeColor[] colors = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE};
 	public static Economy econ = null;
 	public static SignMakerPlugin signmaker = null;
+	public static Main plugin;
 	
 	@Override
 	public void onEnable() {
+		plugin = this;
 		getServer().getPluginManager().registerEvents(this, this);
 
 		Minigames.plugin.mdata.addModule(ColorMatchModule.class);
 		GameMechanics.addGameMechanic(new ColorMatchMechanic());
+		ToolModes.addToolMode(new PatternSelectionTool());
+		
+		PatternRegistry.loadSaved();
 		
 		loadDefaults();
 		saveConfig();
@@ -76,6 +83,7 @@ public class Main extends JavaPlugin implements Listener {
 	public void onDisable() {
 		Minigames.plugin.mdata.removeModule("ColorMatch", ColorMatchModule.class);
 		GameMechanics.removeGameMechanic("colormatch");
+		ToolModes.removeToolMode("CMPATTERN");
 	}
 
 	private boolean setupSignMaker() {
