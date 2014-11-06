@@ -28,6 +28,8 @@ public class ColorMatchModule extends MinigameModule {
 	private IntegerFlag superSigns;
 	private StringFlag idleMessage;
 	private IntegerFlag roundsPerGame;
+	private IntegerFlag roundWaitTime;
+	private IntegerFlag postGameTime;
 	private MaterialFlag material;
 	
 	private HashMap<String, Flag<?>> flags;
@@ -47,6 +49,8 @@ public class ColorMatchModule extends MinigameModule {
 		addFlag(idleMessage = new StringFlag("Game Over", "idle-message"));
 		addFlag(roundsPerGame = new IntegerFlag(10, "rounds-per-game"));
 		addFlag(material = new MaterialFlag(Material.STAINED_CLAY, "material"));
+		addFlag(roundWaitTime = new IntegerFlag(2, "round-wait-time"));
+		addFlag(postGameTime = new IntegerFlag(2, "post-game-time"));
 	}
 	
 	private void addFlag(Flag<?> flag) {
@@ -104,6 +108,8 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(superSigns.getMenuItem("Super Sign Count", Material.SIGN, Arrays.asList("The number of super signs", "this game will attempt to use.", "They must be named as such ", "'colormatch_<minigame><#>'", "where <minigame> is the name ", "of the minigame and ", "<#> is the number of the sign ", "starting from 1"), 0, 10));
 		menu.addItem(idleMessage.getMenuItem("Idle Message", Material.BOOK, Arrays.asList("The message super signs", "will display after the game")));
 		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.DIODE, 0, Integer.MAX_VALUE));
+		menu.addItem(roundWaitTime.getMenuItem("Round Wait Time", Material.WATCH, Arrays.asList("The time between the colour", "being removed and a new round", "begining in seconds"), 0, 200));
+		menu.addItem(postGameTime.getMenuItem("Post Game Time", Material.WATCH, Arrays.asList("The time in seconds to", "wait after the game has", "ended"), 0, 200));
 		
 		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), menu.getSize() - 9);
 		menu.displayMenu(previous.getViewer());
@@ -139,6 +145,14 @@ public class ColorMatchModule extends MinigameModule {
 	
 	public String getIdleMessage() {
 		return idleMessage.getFlag();
+	}
+	
+	public long getRoundWaitTime() {
+		return roundWaitTime.getFlag() * 1000;
+	}
+	
+	public long getPostGameTime() {
+		return postGameTime.getFlag() * 1000;
 	}
 	
 	public GameBoard getGame() {

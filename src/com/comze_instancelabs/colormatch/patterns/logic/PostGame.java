@@ -17,7 +17,7 @@ public class PostGame extends TimerState {
 	
 	@Override
 	public void onStart(StateEngine<GameBoard> engine, GameBoard game) {
-		endTime = System.currentTimeMillis() + 2000;
+		endTime = System.currentTimeMillis() + game.getModule().getPostGameTime();
 		game.generate();
 		game.updateSigns(game.getModule().getIdleMessage(), DyeColor.RED);
 		
