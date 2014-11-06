@@ -12,6 +12,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 
 import au.com.addstar.signmaker.TextSign;
 import au.com.mineauz.minigames.MinigamePlayer;
@@ -106,10 +108,27 @@ public class GameBoard {
 		}
 	}
 	
+	public void updateScoreboard() {
+		int remain = getRemainingCount();
+		int lost = spectators.size();
+		
+		Scoreboard board = getMinigame().getScoreboardManager();
+		Objective objective = board.getObjective(getMinigame().getName(false));
+		objective.setDisplayName(Utilities.translate("&cC&3o&dl&5o&6r&1M&aa&2t&4c&eh!"));
+		
+		objective.getScore(Utilities.translate(" &8-  ")).setScore(5);
+		objective.getScore(Utilities.translate("&aArena")).setScore(4);
+		objective.getScore(Utilities.translate("&d" + getMinigame().getName(true))).setScore(3);
+		objective.getScore(Utilities.translate(" &8- ")).setScore(2);
+		objective.getScore(Utilities.translate("&aPlayers Left")).setScore(1);
+		objective.getScore(remain + "/" + (remain + lost)).setScore(0);
+	}
+	
 	public void joinArena(Player player) {
 		if (module.getMinigame().getPlayers().size() == 1)
 			updateSigns("Waiting", DyeColor.LIME);
 		
+		updateScoreboard();
 	}
 	
 	public void leaveArena(Player player) {
@@ -119,6 +138,8 @@ public class GameBoard {
 			engine.sendEvent("leave", player);
 		else if (module.getMinigame().getPlayers().size() == 1)
 			updateSigns(module.getIdleMessage(), DyeColor.RED);
+		
+		updateScoreboard();
 	}
 	
 	public void setSpectator(Player player) {
@@ -128,6 +149,8 @@ public class GameBoard {
 		mplayer.setCanFly(true);
 		player.setFlying(true);
 		mplayer.teleport(getSpectatorSpawn());
+		
+		updateScoreboard();
 	}
 	
 	public boolean isSpectator(Player player) {
@@ -159,7 +182,7 @@ public class GameBoard {
 	}
 	
 	public DyeColor getRandomColour() {
-		return Main.colors.get(random.nextInt(Main.colors.size()));
+		return Main.colors[random.nextInt(Main.colors.length)];
 	}
 	
 	public void setPattern(PatternBase pattern) {

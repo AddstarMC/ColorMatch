@@ -84,7 +84,7 @@ public abstract class PatternBase {
 			processPattern();
 		
 		for (PatternGroup group : groups) {
-			DyeColor colour = Main.colors.get(random.nextInt(Main.colors.size()));
+			DyeColor colour = Main.colors[random.nextInt(Main.colors.length)];
 			Wool groupMat = new Wool(material);
 			groupMat.setColor(colour);
 			
