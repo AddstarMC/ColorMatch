@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -58,6 +59,7 @@ public class ColorMatchMechanic extends GameMechanicBase {
 			}
 		} else {
 			Location spawn = game.getPlayerSpawn();
+			player.spigot().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 0, 1, 1, 1, 1, 60, 20);
 			if (player.getLocation().getY() < spawn.getY() - game.getModule().getFallDepth()) {
 				game.killPlayer(player);
 			}
