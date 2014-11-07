@@ -22,6 +22,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 
 import com.comze_instancelabs.colormatch.Util.WeightedPatternMap;
 import com.comze_instancelabs.colormatch.patterns.PatternBase;
+import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 import com.comze_instancelabs.colormatch.patterns.logic.PreRoundState;
 import com.comze_instancelabs.colormatch.patterns.logic.StateEngine;
 
@@ -47,6 +48,8 @@ public class GameBoard {
 		engine = new StateEngine<GameBoard>(plugin);
 		availablePatterns = new WeightedPatternMap();
 		spectators = new LinkedList<Player>();
+		
+		currentPattern = PatternRegistry.getPattern("squares");
 	}
 	
 	public void initialize(ColorMatchModule module) {
