@@ -1,29 +1,30 @@
 package com.comze_instancelabs.colormatch.menu;
 
+import java.util.Arrays;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import com.comze_instancelabs.colormatch.GameBoard;
 import com.comze_instancelabs.colormatch.Util.WeightedPatternMap.WeightedPattern;
 import com.comze_instancelabs.colormatch.patterns.PatternBase;
 import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
 import au.com.mineauz.minigames.MinigamePlayer;
+import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
+import au.com.mineauz.minigames.menu.MenuItemCustom;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 
 public class PatternSelectMenu {
 	private final int rows = 6;
 	private final int itemsPerPage = 9 * (rows-1);
 	
-	private Menu container;
-	private GameBoard game;
+	private PatternListMenu previous;
 	
-	public PatternSelectMenu(Menu container, GameBoard game) {
-		this.container = container;
-		this.game = game;
+	public PatternSelectMenu(PatternListMenu menu) {
+		previous = menu;
 	}
 	
 	private int getPatternCount() {
@@ -42,19 +43,27 @@ public class PatternSelectMenu {
 		return getPageStart(page) + itemsPerPage;
 	}
 	
-	private Menu createPatternAddMenu(MinigamePlayer viewer, int page) {
+	private Menu createPatternAddMenu(final MinigamePlayer viewer, int page) {
     	Menu menu = new Menu(rows, "Add Pattern", viewer);
     	
     	int index = 0;
     	for (String name : PatternRegistry.getPatterns()) {
     		if (index >= getPageStart(page) && index < getPageEnd(page)) {
-    			menu.addItem(new MenuItemAddPatternObject(name, Material.STAINED_CLAY, name, PatternRegistry.getPattern(name)));
+    			menu.addItem(new MenuItemAddPatternObject(name, Material.BRICK, name, PatternRegistry.getPattern(name)));
     		}
     		++index;
     	}
     	
     	// Add controls
-    	menu.addItem(new MenuItemPage("Done", Material.REDSTONE_TORCH_ON, container), menu.getSize() - 9);
+    	MenuItemCustom done = new MenuItemCustom("Back", Material.REDSTONE_TORCH_ON);
+    	done.setClick(new InteractionInterface() {
+			@Override
+			public Object interact(Object object) {
+				previous.show(viewer);
+				return null;
+			}
+		});
+    	menu.addItem(done, menu.getSize() - 9);
 		
 		return menu;
     }
@@ -77,8 +86,8 @@ public class PatternSelectMenu {
 	}
 	
 	public void show() {
-		Menu menu = createPatternAddMenu(container.getViewer());
-		menu.displayMenu(container.getViewer());
+		Menu menu = createPatternAddMenu(previous.getPrevious().getViewer());
+		menu.displayMenu(previous.getPrevious().getViewer());
 	}
 	
 	private class MenuItemAddPatternObject extends MenuItem {
@@ -90,6 +99,7 @@ public class PatternSelectMenu {
 			super(name, displayItem);
 			this.patternName = patternName;
 			this.pattern = pattern;
+			setDescription(Arrays.asList(ChatColor.YELLOW + "Size: " + ChatColor.WHITE + pattern.getWidth() + "x" + pattern.getHeight(), ChatColor.GRAY.toString() + ChatColor.ITALIC + "Left click to enter weight and add."));
 		}
 		
 		@Override
@@ -97,7 +107,7 @@ public class PatternSelectMenu {
 			MinigamePlayer player = getContainer().getViewer();
 			player.setNoClose(true);
 			player.getPlayer().closeInventory();
-			player.sendMessage("Enter the weight of this pattern. An integer 1 or more. The higher its value, the more likely it is to be chosen. The menu will automatically reopen in 20s if nothing is entered.");
+			player.sendMessage("Enter the weight of this pattern, an integer 1 or more. The higher its value, the more likely it is to be chosen. The menu will automatically reopen in 20s if nothing is entered.");
 			player.setManualEntry(this);
 			getContainer().startReopenTimer(20);;
 			
@@ -112,7 +122,7 @@ public class PatternSelectMenu {
 					getContainer().getViewer().sendMessage(ChatColor.RED + "Invalid weight value. Must be an integer 1 or higher.");
 				} else {
 					WeightedPattern wPattern = new WeightedPattern(weight, patternName, pattern);
-					game.getPatternMap().add(wPattern);
+					previous.getGame().getPatternMap().add(wPattern);
 				}
 			} catch(NumberFormatException e) {
 				getContainer().getViewer().sendMessage(ChatColor.RED + "Invalid weight value. Must be an integer 1 or higher.");
@@ -120,7 +130,7 @@ public class PatternSelectMenu {
 			
 			// Open the parent menu again
 			getContainer().cancelReopenTimer();
-			container.displayMenu(getContainer().getViewer());
+			previous.show(getContainer().getViewer());
 		}
 	}
 }

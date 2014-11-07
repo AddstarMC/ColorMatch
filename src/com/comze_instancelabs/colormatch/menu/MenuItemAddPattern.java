@@ -1,32 +1,24 @@
 package com.comze_instancelabs.colormatch.menu;
 
-import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-
-import com.comze_instancelabs.colormatch.GameBoard;
 
 import au.com.mineauz.minigames.menu.MenuItem;
 
 public class MenuItemAddPattern extends MenuItem {
 
-	private GameBoard game;
-	public MenuItemAddPattern(String name, List<String> description, Material displayItem, GameBoard game) {
-		super(name, description, displayItem);
-		this.game = game;
-	}
+	private PatternListMenu menu;
 	
-	public MenuItemAddPattern(String name, Material displayItem, GameBoard game) {
+	public MenuItemAddPattern(String name, Material displayItem, PatternListMenu menu) {
 		super(name, displayItem);
-		this.game = game;
+		this.menu = menu;
 	}
 	
 	@Override
 	public ItemStack onClick() {
 		
-		PatternSelectMenu menu = new PatternSelectMenu(getContainer(), game);
-		menu.show();
+		PatternSelectMenu selectMenu = new PatternSelectMenu(menu);
+		selectMenu.show();
 		
 		return getItem();
 	}
