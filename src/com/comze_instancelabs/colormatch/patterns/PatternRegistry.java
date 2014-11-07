@@ -77,7 +77,9 @@ public class PatternRegistry {
 	
 	static {
 		allPatterns = new HashMap<String, PatternBase>();
-		addPattern("Squares", new SquaresPattern(8, 8));
-		addPattern("Squares16", new SquaresPattern(16, 16));
+		addPattern("Squares", new SquaresPattern(8, 8, 4));
+		addPattern("Squares64", new SquaresPattern(16, 16, 4));
+		addPattern("random", new SquaresPattern(32, 32, 1));
+		addPattern("random64", new SquaresPattern(64, 64, 1));
 	}
 }

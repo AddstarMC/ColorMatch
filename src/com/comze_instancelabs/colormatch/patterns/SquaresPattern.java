@@ -7,16 +7,17 @@ import org.bukkit.material.MaterialData;
  * A pattern consisting of squares each 4x4 blocks
  */
 public class SquaresPattern extends PatternBase {
-	private static final int squareSize = 4;
+	private int squareSize;
 	
 	private int width;
 	private int height;
 	
 	private PatternPixel[] pixels;
 	
-	public SquaresPattern(int width, int height) {
+	public SquaresPattern(int width, int height, int squareSize) {
 		this.width = width;
 		this.height = height;
+		this.squareSize = squareSize;
 		
 		generatePattern();
 	}
