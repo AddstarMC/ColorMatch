@@ -3,6 +3,8 @@ package com.comze_instancelabs.colormatch.patterns.logic;
 import org.bukkit.DyeColor;
 import org.bukkit.entity.Player;
 
+import au.com.mineauz.minigames.MinigamePlayer;
+
 import com.comze_instancelabs.colormatch.GameBoard;
 
 public class BetweenRoundState extends TimerState {
@@ -11,6 +13,11 @@ public class BetweenRoundState extends TimerState {
 	public void onStart(StateEngine<GameBoard> engine, GameBoard game) {
 		endTime = System.currentTimeMillis() + game.getModule().getRoundWaitTime();
 		game.updateSigns("Wait", DyeColor.GRAY);
+		
+		for (MinigamePlayer player : game.getMinigame().getPlayers()) {
+			player.getPlayer().getInventory().clear();
+			player.updateInventory();
+		}
 	}
 	
 	@Override
