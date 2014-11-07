@@ -59,8 +59,8 @@ public class ColorMatchMechanic extends GameMechanicBase {
 			}
 		} else {
 			Location spawn = game.getPlayerSpawn();
-			player.spigot().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 0, 1, 1, 1, 1, 60, 20);
 			if (player.getLocation().getY() < spawn.getY() - game.getModule().getFallDepth()) {
+				player.spigot().playEffect(player.getLocation(), Effect.COLOURED_DUST, 0, 0, 1, 1, 1, 1, 60, 20);
 				game.killPlayer(player);
 			}
 		}
