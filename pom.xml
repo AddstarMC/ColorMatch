@@ -110,6 +110,7 @@
     </resources>
 
     <sourceDirectory>src</sourceDirectory>
+    <finalName>${project.name}</finalName>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
