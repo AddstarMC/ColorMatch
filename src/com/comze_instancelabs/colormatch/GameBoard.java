@@ -181,6 +181,7 @@ public class GameBoard {
 	}
 	
 	public void start() {
+		round = 0;
 		engine.start(new PreRoundState(), this);
 	}
 	
@@ -238,6 +239,10 @@ public class GameBoard {
 	
 	public int getRemainingCount() {
 		return module.getMinigame().getPlayers().size() - spectators.size();
+	}
+	
+	public void setRound(int round) {
+		this.round = round;
 	}
 	
 	public int getRound() {

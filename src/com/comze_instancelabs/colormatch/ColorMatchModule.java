@@ -19,6 +19,7 @@ import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
+import au.com.mineauz.minigames.config.FloatFlag;
 import au.com.mineauz.minigames.config.IntegerFlag;
 import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
@@ -28,7 +29,6 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 
 public class ColorMatchModule extends MinigameModule {
 	
-	private IntegerFlag difficulty;
 	private IntegerFlag spectatorHeight;
 	private IntegerFlag floorDepth;
 	private IntegerFlag fallDepth;
@@ -37,6 +37,10 @@ public class ColorMatchModule extends MinigameModule {
 	private IntegerFlag roundsPerGame;
 	private IntegerFlag roundWaitTime;
 	private IntegerFlag postGameTime;
+	private FloatFlag initialRoundTime;
+	private IntegerFlag roundSpan;
+	private FloatFlag minimumRoundTime;
+	
 	private MaterialFlag material;
 	
 	private HashMap<String, Flag<?>> flags;
@@ -48,7 +52,6 @@ public class ColorMatchModule extends MinigameModule {
 		super(mgm);
 		
 		flags = new HashMap<String, Flag<?>>();
-		addFlag(difficulty = new IntegerFlag(1, "difficulty"));
 		addFlag(spectatorHeight = new IntegerFlag(5, "spectator-height"));
 		addFlag(floorDepth = new IntegerFlag(10, "floor-depth"));
 		addFlag(fallDepth = new IntegerFlag(5, "fall-depth"));
@@ -58,6 +61,9 @@ public class ColorMatchModule extends MinigameModule {
 		addFlag(material = new MaterialFlag(Material.STAINED_CLAY, "material"));
 		addFlag(roundWaitTime = new IntegerFlag(2, "round-wait-time"));
 		addFlag(postGameTime = new IntegerFlag(2, "post-game-time"));
+		addFlag(initialRoundTime = new FloatFlag(2f, "round-initial-time"));
+		addFlag(roundSpan = new IntegerFlag(10, "round-span"));
+		addFlag(minimumRoundTime = new FloatFlag(1f, "round-min-time"));
 	}
 	
 	private void addFlag(Flag<?> flag) {
@@ -127,7 +133,6 @@ public class ColorMatchModule extends MinigameModule {
 	@Override
 	public boolean displayMechanicSettings(Menu previous) {
 		Menu menu = new Menu(6, getMinigame().getName(false), previous.getViewer());
-		menu.addItem(difficulty.getMenuItem("Difficulty", Material.DIAMOND_SWORD, Arrays.asList("The difficulty of the board. ", "0 is the easiest and 3, the hardest.", "This only effects the time available to move."), 0, 3));
 		menu.addItem(fallDepth.getMenuItem("Fall Depth", Material.FEATHER, Arrays.asList("The distance below the spawn ", "that a player must pass below to ", "be considered off the board"), 1, 255));
 		menu.addItem(floorDepth.getMenuItem("Floor Depth", Material.BRICK, 1, 255));
 		menu.addItem(material.getMenuItem("Board Material", Material.STAINED_CLAY, Arrays.asList("The base material the board", "is made of. The colour ", "of that material will be randomized")));
@@ -137,6 +142,9 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.DIODE, 0, Integer.MAX_VALUE));
 		menu.addItem(roundWaitTime.getMenuItem("Round Wait Time", Material.WATCH, Arrays.asList("The time between the colour", "being removed and a new round", "begining in seconds"), 0, 200));
 		menu.addItem(postGameTime.getMenuItem("Post Game Time", Material.WATCH, Arrays.asList("The time in seconds to", "wait after the game has", "ended"), 0, 200));
+		menu.addItem(initialRoundTime.getMenuItem("Initial Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "first round will last"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
+		menu.addItem(minimumRoundTime.getMenuItem("Minimum Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "round time cannot go below"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
+		menu.addItem(roundSpan.getMenuItem("Round Time Span", Material.WATCH, Arrays.asList("The number of rounds","to decrease the time","to the minimum time","from the initial time.","After this, the time","will just be the minimum","time."), 1, Integer.MAX_VALUE));
 		
 		if (game != null)
 			menu.addItem(new MenuItemShowPatterns("Edit Patterns", Material.STAINED_CLAY, game));
@@ -144,10 +152,6 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), menu.getSize() - 9);
 		menu.displayMenu(previous.getViewer());
 		return true;
-	}
-	
-	public int getDifficulty() {
-		return difficulty.getFlag();
 	}
 	
 	public int getFallDepth() {
@@ -183,6 +187,18 @@ public class ColorMatchModule extends MinigameModule {
 	
 	public long getPostGameTime() {
 		return postGameTime.getFlag() * 1000;
+	}
+	
+	public long getInitialRoundTime() {
+		return (long)(initialRoundTime.getFlag() * 1000);
+	}
+	
+	public int getRoundSpan() {
+		return roundSpan.getFlag();
+	}
+	
+	public long getMinRoundTime() {
+		return (long)(minimumRoundTime.getFlag() * 1000);
 	}
 	
 	public GameBoard getGame() {

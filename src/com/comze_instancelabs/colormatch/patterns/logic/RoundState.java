@@ -14,11 +14,16 @@ public class RoundState extends TimerState {
 	@Override
 	public void onStart(StateEngine<GameBoard> engine, GameBoard game) {
 		// Calculate the round end time
-		int difficulty = game.getModule().getDifficulty();
-		int roundLimit = 15 - difficulty * 3;
-		double roundTime = (5 - difficulty / 2.0) - (game.getRound() / (double)roundLimit)*2;
-		endTime = System.currentTimeMillis() + (long)(roundTime * 1000);
+		
 		startTime = System.currentTimeMillis();
+		
+		double time = game.getRound() / (double)game.getModule().getRoundSpan();
+		if (time > 1)
+			time = 1;
+		
+		time = game.getModule().getInitialRoundTime() * (1-time) + game.getModule().getMinRoundTime() * time;
+		
+		endTime = System.currentTimeMillis() + (long)(time);
 	}
 	
 	@Override

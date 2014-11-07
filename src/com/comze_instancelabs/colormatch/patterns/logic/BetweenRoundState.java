@@ -13,6 +13,7 @@ public class BetweenRoundState extends TimerState {
 	public void onStart(StateEngine<GameBoard> engine, GameBoard game) {
 		endTime = System.currentTimeMillis() + game.getModule().getRoundWaitTime();
 		game.updateSigns("Wait", DyeColor.GRAY);
+		game.setRound(game.getRound()+1);
 		
 		for (MinigamePlayer player : game.getMinigame().getPlayers()) {
 			player.getPlayer().getInventory().clear();
