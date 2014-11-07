@@ -50,10 +50,11 @@ public class ColorMatchMechanic extends GameMechanicBase {
 		if (game.isSpectator(player)) {
 			Location spectateSpawn = game.getSpectatorSpawn();
 			
-			if (player.getLocation().getY() < spectateSpawn.getY() || player.getLocation().getY() > spectateSpawn.getY()) {
+			if (player.getLocation().getY() < spectateSpawn.getY() - 0.5 || player.getLocation().getY() > spectateSpawn.getY() + 0.5) {
 				Location newLoc = player.getLocation();
 				newLoc.setY(spectateSpawn.getY());
-				player.teleport(newLoc);
+				MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+				mplayer.teleport(newLoc);
 			}
 		} else {
 			Location spawn = game.getPlayerSpawn();

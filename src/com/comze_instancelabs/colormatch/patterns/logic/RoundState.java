@@ -17,7 +17,11 @@ public class RoundState extends TimerState {
 		
 		startTime = System.currentTimeMillis();
 		
-		double time = game.getRound() / (double)game.getModule().getRoundSpan();
+		double time = 0;
+		if (game.getRound() > game.getModule().getRoundDelay()) {
+			time = (game.getRound() - game.getModule().getRoundDelay()) / (double)game.getModule().getRoundSpan();
+		}
+		
 		if (time > 1)
 			time = 1;
 		

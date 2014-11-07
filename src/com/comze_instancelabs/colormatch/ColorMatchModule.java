@@ -40,6 +40,7 @@ public class ColorMatchModule extends MinigameModule {
 	private FloatFlag initialRoundTime;
 	private IntegerFlag roundSpan;
 	private FloatFlag minimumRoundTime;
+	private IntegerFlag roundDelay;
 	
 	private MaterialFlag material;
 	
@@ -64,6 +65,7 @@ public class ColorMatchModule extends MinigameModule {
 		addFlag(initialRoundTime = new FloatFlag(2f, "round-initial-time"));
 		addFlag(roundSpan = new IntegerFlag(10, "round-span"));
 		addFlag(minimumRoundTime = new FloatFlag(1f, "round-min-time"));
+		addFlag(roundDelay = new IntegerFlag(2, "round-delay"));
 	}
 	
 	private void addFlag(Flag<?> flag) {
@@ -145,6 +147,7 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(initialRoundTime.getMenuItem("Initial Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "first round will last"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
 		menu.addItem(minimumRoundTime.getMenuItem("Minimum Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "round time cannot go below"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
 		menu.addItem(roundSpan.getMenuItem("Round Time Span", Material.WATCH, Arrays.asList("The number of rounds","to decrease the time","to the minimum time","from the initial time.","After this, the time","will just be the minimum","time."), 1, Integer.MAX_VALUE));
+		menu.addItem(roundDelay.getMenuItem("Round Time Decrease Delay", Material.DIODE, Arrays.asList("The number of rounds ", "to wait before starting ", "to decrease the round time"), 0, Integer.MAX_VALUE));
 		
 		if (game != null)
 			menu.addItem(new MenuItemShowPatterns("Edit Patterns", Material.STAINED_CLAY, game));
@@ -199,6 +202,10 @@ public class ColorMatchModule extends MinigameModule {
 	
 	public long getMinRoundTime() {
 		return (long)(minimumRoundTime.getFlag() * 1000);
+	}
+	
+	public int getRoundDelay() {
+		return roundDelay.getFlag();
 	}
 	
 	public GameBoard getGame() {
