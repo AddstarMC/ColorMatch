@@ -9,6 +9,7 @@ import au.com.mineauz.minigames.MinigamePlayer;
 
 import com.comze_instancelabs.colormatch.GameBoard;
 import com.comze_instancelabs.colormatch.Utilities;
+import com.comze_instancelabs.colormatch.patterns.PatternBase;
 
 public class PreRoundState extends State<GameBoard> {
 	
@@ -16,6 +17,10 @@ public class PreRoundState extends State<GameBoard> {
 	public void onStart(StateEngine<GameBoard> engine, GameBoard game) {
 		DyeColor colour = game.getRandomColour();
 		game.setColour(colour);
+		
+		PatternBase pattern = game.getPatternMap().getRandom(game.getRandom());
+		game.setCurrentPattern(pattern);
+		
 		game.generate();
 		
 		// Let players know what colour it is now

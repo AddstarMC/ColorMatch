@@ -1,7 +1,9 @@
 package com.comze_instancelabs.colormatch;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -9,6 +11,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import com.comze_instancelabs.colormatch.Util.WeightedPatternMap.WeightedPattern;
+import com.comze_instancelabs.colormatch.menu.MenuItemShowPatterns;
+import com.comze_instancelabs.colormatch.patterns.PatternBase;
+import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.config.Flag;
@@ -79,6 +86,13 @@ public class ColorMatchModule extends MinigameModule {
 			config.set("board.location.x", game.getSpawn().getBlockX());
 			config.set("board.location.y", game.getSpawn().getBlockY());
 			config.set("board.location.z", game.getSpawn().getBlockZ());
+			
+			ArrayList<String> patternStrings = new ArrayList<String>(game.getPatternMap().getPatterns().size());
+			for (WeightedPattern pattern : game.getPatternMap().getPatterns()) {
+				patternStrings.add(String.format("%d:%s", pattern.getWeight(), pattern.getPatternName()));
+			}
+			
+			config.set("board.patterns", patternStrings);
 		}
 	}
 
@@ -88,6 +102,19 @@ public class ColorMatchModule extends MinigameModule {
 			game = new GameBoard(Minigames.plugin);
 			World world = Bukkit.getWorld(config.getString("board.location.world"));
 			game.setSpawn(new Location(world, config.getInt("board.location.x"), config.getInt("board.location.y"), config.getInt("board.location.z")));
+			
+			List<String> patternStrings = config.getStringList("board.patterns");
+			if (patternStrings != null) {
+				for(String string : patternStrings) {
+					int weight = Integer.parseInt(string.split(":")[0]);
+					String name = string.split(":")[1];
+					PatternBase pattern = PatternRegistry.getPattern(name);
+					if (pattern != null) {
+						game.getPatternMap().add(new WeightedPattern(weight, name, pattern));
+					}
+				}
+			}
+			
 			game.initialize(this);
 			hasInitted = true;
 		}
@@ -110,6 +137,9 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.DIODE, 0, Integer.MAX_VALUE));
 		menu.addItem(roundWaitTime.getMenuItem("Round Wait Time", Material.WATCH, Arrays.asList("The time between the colour", "being removed and a new round", "begining in seconds"), 0, 200));
 		menu.addItem(postGameTime.getMenuItem("Post Game Time", Material.WATCH, Arrays.asList("The time in seconds to", "wait after the game has", "ended"), 0, 200));
+		
+		if (game != null)
+			menu.addItem(new MenuItemShowPatterns("Edit Patterns", Material.STAINED_CLAY, game));
 		
 		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), menu.getSize() - 9);
 		menu.displayMenu(previous.getViewer());

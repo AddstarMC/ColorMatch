@@ -20,8 +20,8 @@ import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.minigame.Minigame;
 
+import com.comze_instancelabs.colormatch.Util.WeightedPatternMap;
 import com.comze_instancelabs.colormatch.patterns.PatternBase;
-import com.comze_instancelabs.colormatch.patterns.SquaresPattern;
 import com.comze_instancelabs.colormatch.patterns.logic.PreRoundState;
 import com.comze_instancelabs.colormatch.patterns.logic.StateEngine;
 
@@ -30,6 +30,7 @@ public class GameBoard {
 	
 	private Location spawn;
 	
+	private WeightedPatternMap availablePatterns;
 	private PatternBase currentPattern;
 	private DyeColor currentColour;
 	private int round;
@@ -44,11 +45,8 @@ public class GameBoard {
 		random = new Random();
 		activeBlocks = new ArrayList<Block>();
 		engine = new StateEngine<GameBoard>(plugin);
-		
+		availablePatterns = new WeightedPatternMap();
 		spectators = new LinkedList<Player>();
-		
-		// TODO: Note this is for testing purposes. The pattern will be set by defined params at a later date
-		currentPattern = new SquaresPattern(8, 8);
 	}
 	
 	public void initialize(ColorMatchModule module) {
@@ -185,11 +183,15 @@ public class GameBoard {
 		return Main.colors[random.nextInt(Main.colors.length)];
 	}
 	
-	public void setPattern(PatternBase pattern) {
+	public WeightedPatternMap getPatternMap() {
+		return availablePatterns;
+	}
+	
+	public void setCurrentPattern(PatternBase pattern) {
 		currentPattern = pattern;
 	}
 	
-	public PatternBase getPattern() {
+	public PatternBase getCurrentPattern() {
 		return currentPattern;
 	}
 	

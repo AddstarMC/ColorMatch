@@ -103,6 +103,11 @@ public class ColorMatchMechanic extends GameMechanicBase {
 			return false;
 		}
 		
+		if (game.getPatternMap().getPatterns().isEmpty()) {
+			send(player, ChatColor.RED + "There are no defined patterns");
+			return false;
+		}
+		
 		// TODO: Check state
 		return true;
 	}
