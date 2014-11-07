@@ -18,6 +18,8 @@ public class BetweenRoundState extends TimerState {
 			player.getPlayer().getInventory().clear();
 			player.updateInventory();
 		}
+		
+		game.updateScoreboard();
 	}
 	
 	@Override

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -109,20 +110,37 @@ public class GameBoard {
 		}
 	}
 	
+	private String scoreboardLastColourText = "";
+	private String scoreboardLastPlayerCountText = "";
+	
 	public void updateScoreboard() {
 		int remain = getRemainingCount();
 		int lost = spectators.size();
 		
 		Scoreboard board = getMinigame().getScoreboardManager();
+		
+		// Remove player names
+		for (MinigamePlayer player : getMinigame().getPlayers()) {
+			board.resetScores(player.getName());
+		}
+		
+		board.resetScores(scoreboardLastColourText);
+		board.resetScores(scoreboardLastPlayerCountText);
+		
 		Objective objective = board.getObjective(getMinigame().getName(false));
 		objective.setDisplayName(Utilities.translate("&cC&3o&dl&5o&6r&1M&aa&2t&4c&eh!"));
 		
-		objective.getScore(Utilities.translate(" &8-  ")).setScore(5);
-		objective.getScore(Utilities.translate("&aArena")).setScore(4);
-		objective.getScore(Utilities.translate("&d" + getMinigame().getName(true))).setScore(3);
-		objective.getScore(Utilities.translate(" &8- ")).setScore(2);
-		objective.getScore(Utilities.translate("&aPlayers Left")).setScore(1);
-		objective.getScore(remain + "/" + (remain + lost)).setScore(0);
+		objective.getScore(Utilities.translate("&7Colour")).setScore(5);
+		if (engine.getCurrentState() instanceof PreRoundState) {
+			scoreboardLastColourText = Utilities.dyeToChat(currentColour).toString() + ChatColor.BOLD + " " + currentColour.toString();
+		} else {
+			scoreboardLastColourText = Utilities.translate("&8&l -");
+		}
+		objective.getScore(scoreboardLastColourText).setScore(4);
+		objective.getScore(Utilities.translate("&8")).setScore(3);
+		objective.getScore(Utilities.translate("&7Players Left")).setScore(2);
+		scoreboardLastPlayerCountText = ChatColor.YELLOW.toString() + remain + "/" + (remain + lost); 
+		objective.getScore(scoreboardLastPlayerCountText).setScore(1);
 	}
 	
 	public void joinArena(Player player) {

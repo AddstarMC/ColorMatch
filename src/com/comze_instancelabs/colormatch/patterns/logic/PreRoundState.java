@@ -39,6 +39,7 @@ public class PreRoundState extends State<GameBoard> {
 		}
 		
 		game.updateSigns(colour.name(), colour);
+		game.updateScoreboard();
 		
 		engine.setState(new RoundState());
 	}
