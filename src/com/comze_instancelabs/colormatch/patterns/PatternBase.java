@@ -28,6 +28,7 @@ public abstract class PatternBase {
 	
 	public final void processPattern() {
 		HashSet<PatternPixel> visited = new HashSet<PatternPixel>();
+		
 		groups = new HashSet<PatternGroup>();
 		
 		for (int x = 0; x < getWidth(); ++x) {
@@ -51,22 +52,26 @@ public abstract class PatternBase {
 					group.getPixels().add(floodPixel);
 					
 					// Pixel to left
-					if (isMatch(getPixel(floodPixel.offsetX-1, y), floodPixel))
-						floodQueue.add(getPixel(floodPixel.offsetX-1, floodPixel.offsetY));
+					PatternPixel nextPixel = getPixel(floodPixel.offsetX-1, floodPixel.offsetY);
+					if (isMatch(nextPixel, floodPixel) && !visited.contains(nextPixel))
+						floodQueue.add(nextPixel);
 					
 					// Pixel to right
-					if (isMatch(getPixel(floodPixel.offsetX+1, floodPixel.offsetY), floodPixel))
-						floodQueue.add(getPixel(floodPixel.offsetX+1, floodPixel.offsetY));
+					nextPixel = getPixel(floodPixel.offsetX+1, floodPixel.offsetY);
+					if (isMatch(nextPixel, floodPixel) && !visited.contains(nextPixel))
+						floodQueue.add(nextPixel);
 					
 					// Pixel to top
-					if (isMatch(getPixel(floodPixel.offsetX, floodPixel.offsetY-1), floodPixel))
-						floodQueue.add(getPixel(floodPixel.offsetX, floodPixel.offsetY-1));
+					nextPixel = getPixel(floodPixel.offsetX, floodPixel.offsetY-1);
+					if (isMatch(nextPixel, floodPixel) && !visited.contains(nextPixel))
+						floodQueue.add(nextPixel);
 					
 					// Pixel to bottom
-					if (isMatch(getPixel(floodPixel.offsetX, floodPixel.offsetY+1), floodPixel))
-						floodQueue.add(getPixel(floodPixel.offsetX, floodPixel.offsetY+1));
+					nextPixel = getPixel(floodPixel.offsetX, floodPixel.offsetY+1);
+					if (isMatch(nextPixel, floodPixel) && !visited.contains(nextPixel))
+						floodQueue.add(nextPixel);
 				}
-				
+			
 				groups.add(group);
 			}
 		}
@@ -82,6 +87,16 @@ public abstract class PatternBase {
 	public final void placeAt(Location location, Material material, List<Block> modified, Random random) {
 		if (groups == null)
 			processPattern();
+		
+//      // Debug placing that shows the patterns actual materials with no randomization 		
+//		for (int x = 0; x < getWidth(); ++x) {
+//			for (int y = 0; y < getHeight(); ++y) {
+//				PatternPixel pixel = getPixel(x, y);
+//				Block block = location.getWorld().getBlockAt(pixel.getLocation(location));
+//				block.setType(pixel.material.getItemType());
+//				block.setData(pixel.material.getData());
+//			}
+//		}
 		
 		for (PatternGroup group : groups) {
 			DyeColor colour = Main.colors[random.nextInt(Main.colors.length)];
