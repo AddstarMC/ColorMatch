@@ -128,7 +128,7 @@ public class GameBoard {
 		board.resetScores(scoreboardLastPlayerCountText);
 		
 		Objective objective = board.getObjective(getMinigame().getName(false));
-		objective.setDisplayName(Utilities.translate("&cC&3o&dl&5o&6r&1M&aa&2t&4c&eh!"));
+		objective.setDisplayName(ChatColor.YELLOW + getMinigame().getName(true));
 		
 		objective.getScore(Utilities.translate("&7Colour")).setScore(5);
 		if (engine.getCurrentState() instanceof PreRoundState) {
