@@ -56,6 +56,7 @@ public class ColorMatchMechanic extends GameMechanicBase {
 				newLoc.setY(spectateSpawn.getY());
 				MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
 				mplayer.teleport(newLoc);
+				mplayer.getPlayer().setFlying(true);
 			}
 		} else {
 			Location spawn = game.getPlayerSpawn();
