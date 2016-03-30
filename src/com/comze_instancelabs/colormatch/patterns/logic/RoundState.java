@@ -41,9 +41,9 @@ public class RoundState extends TimerState {
 			if ((lastPercent < 0.333f && percent >= 0.333f) ||
 				(lastPercent < 0.666f && percent >= 0.666f)) 
 			{
-				player.getPlayer().playSound(player.getLocation(), Sound.NOTE_BASS, 1, 0);
+				player.getPlayer().playSound(player.getLocation(), Sound.BLOCK_NOTE_BASS, 1, 0);
 			} else if (percent >= 1) {
-				player.getPlayer().playSound(player.getLocation(), Sound.NOTE_BASS, 1, 2);
+				player.getPlayer().playSound(player.getLocation(), Sound.BLOCK_NOTE_BASS, 1, 2);
 			}
 			
 			lastPercent = percent;
