@@ -11,11 +11,10 @@ import org.bukkit.material.Wool;
 
 import com.google.common.collect.Maps;
 
-@SuppressWarnings("deprecation")
 public class Utilities {
 	public static DyeColor getBlockColour(Block block) {
 		Material mat = block.getType();
-		if (mat == Material.WOOL || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE) {
+		if (mat == Material.WOOL || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE || mat == Material.CONCRETE) {
 			Wool wool = new Wool(mat, block.getData());
 			return wool.getColor();
 		}

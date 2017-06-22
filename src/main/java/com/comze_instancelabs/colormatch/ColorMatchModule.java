@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import au.com.mineauz.minigames.config.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -18,10 +19,6 @@ import com.comze_instancelabs.colormatch.patterns.PatternBase;
 import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
 import au.com.mineauz.minigames.Minigames;
-import au.com.mineauz.minigames.config.Flag;
-import au.com.mineauz.minigames.config.FloatFlag;
-import au.com.mineauz.minigames.config.IntegerFlag;
-import au.com.mineauz.minigames.config.StringFlag;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItemPage;
 import au.com.mineauz.minigames.minigame.Minigame;
@@ -41,6 +38,7 @@ public class ColorMatchModule extends MinigameModule {
 	private IntegerFlag roundSpan;
 	private FloatFlag minimumRoundTime;
 	private IntegerFlag roundDelay;
+	private BooleanFlag extendedColors;
 	
 	private MaterialFlag material;
 	
@@ -66,6 +64,7 @@ public class ColorMatchModule extends MinigameModule {
 		addFlag(roundSpan = new IntegerFlag(10, "round-span"));
 		addFlag(minimumRoundTime = new FloatFlag(1f, "round-min-time"));
 		addFlag(roundDelay = new IntegerFlag(2, "round-delay"));
+		addFlag(extendedColors = new BooleanFlag(false, "extended-colors"));
 	}
 	
 	private void addFlag(Flag<?> flag) {
@@ -148,6 +147,7 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(minimumRoundTime.getMenuItem("Minimum Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "round time cannot go below"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
 		menu.addItem(roundSpan.getMenuItem("Round Time Span", Material.WATCH, Arrays.asList("The number of rounds","to decrease the time","to the minimum time","from the initial time.","After this, the time","will just be the minimum","time."), 1, Integer.MAX_VALUE));
 		menu.addItem(roundDelay.getMenuItem("Round Time Decrease Delay", Material.DIODE, Arrays.asList("The number of rounds ", "to wait before starting ", "to decrease the round time"), 0, Integer.MAX_VALUE));
+		menu.addItem(extendedColors.getMenuItem("Extended Colors", Material.REDSTONE, Arrays.asList(" Use and Extended", "Color Pallete if" , "true")));
 		
 		if (game != null)
 			menu.addItem(new MenuItemShowPatterns("Edit Patterns", Material.STAINED_CLAY, game));
@@ -217,6 +217,10 @@ public class ColorMatchModule extends MinigameModule {
 		}
 		
 		return game;
+	}
+
+	public boolean getExtendedColor() {
+		return extendedColors.getFlag();
 	}
 	
 	public void setGame(GameBoard game) {

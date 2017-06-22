@@ -36,8 +36,8 @@ public class RoundState extends TimerState {
 		
 		float percent = (System.currentTimeMillis() - startTime) / (float)(endTime - startTime);
 		for(MinigamePlayer player : game.getMinigame().getPlayers()) {
-			player.getPlayer().setExp(1 - percent);
-			
+			float remain = ((1 - percent) < 0 )?0:(1-percent);
+			player.getPlayer().setExp(remain);
 			if ((lastPercent < 0.333f && percent >= 0.333f) ||
 				(lastPercent < 0.666f && percent >= 0.666f)) 
 			{

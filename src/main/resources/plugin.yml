@@ -1,6 +1,6 @@
 name: ColorMatch
 main: com.comze_instancelabs.colormatch.Main
-version: 1.7.7
+version: ${plugin.version}
 author: instancelabs
 depend: [Minigames]
 commands:

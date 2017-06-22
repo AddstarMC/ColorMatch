@@ -15,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.material.Dye;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comze_instancelabs.colormatch.Util.Metrics;
@@ -23,6 +24,7 @@ import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 public class Main extends JavaPlugin implements Listener {
 
 	public static final DyeColor[] colors = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE};
+	public static final DyeColor[] extendedColor = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE,DyeColor.LIGHT_BLUE,DyeColor.BROWN,DyeColor.GRAY,DyeColor.LIME,DyeColor.MAGENTA,DyeColor.PINK,DyeColor.SILVER};
 	public static Economy econ = null;
 	public static SignMakerPlugin signmaker = null;
 	public static Main plugin;

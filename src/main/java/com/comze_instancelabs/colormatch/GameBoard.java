@@ -86,7 +86,7 @@ public class GameBoard {
 	
 	public void generate() {
 		clear();
-		currentPattern.placeAt(getBoardOrigin(), module.getBoardMaterial(), activeBlocks, random);
+		currentPattern.placeAt(getBoardOrigin(), module.getBoardMaterial(), activeBlocks, random,module.getExtendedColor());
 	}
 	
 	public void broadcast(String message) {
@@ -202,6 +202,9 @@ public class GameBoard {
 	}
 	
 	public DyeColor getRandomColour() {
+		if(module.getExtendedColor()){
+			return Main.extendedColor[random.nextInt(Main.extendedColor.length)];
+		}
 		return Main.colors[random.nextInt(Main.colors.length)];
 	}
 	
