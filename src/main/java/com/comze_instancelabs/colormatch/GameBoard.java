@@ -86,7 +86,7 @@ public class GameBoard {
 	
 	public void generate() {
 		clear();
-		currentPattern.placeAt(getBoardOrigin(), module.getBoardMaterial(), activeBlocks, random,module.getExtendedColor());
+		currentPattern.placeAt(getBoardOrigin(), module.getBoardMaterial(), activeBlocks, random,currentColour, module.getExtendedColor());
 	}
 	
 	public void broadcast(String message) {
@@ -95,7 +95,6 @@ public class GameBoard {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void updateSigns(String message, DyeColor colour) {
 		if (Main.signmaker != null) {
 			for (int i = 1; i <= module.getSuperSignCount(); ++i) {

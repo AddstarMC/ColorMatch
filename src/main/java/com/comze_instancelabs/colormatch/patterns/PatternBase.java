@@ -84,7 +84,7 @@ public abstract class PatternBase {
 		return current.material.equals(pixel.material);
 	}
 	
-	public final void placeAt(Location location, Material material, List<Block> modified, Random random, boolean extendedColor) {
+	public final void placeAt(Location location, Material material, List<Block> modified, Random random,DyeColor cuurentColour, boolean extendedColor) {
 		if (groups == null)
 			processPattern();
 		
@@ -104,13 +104,19 @@ public abstract class PatternBase {
 			colours = Main.colors;
 
 		}
-
+		int groupnum = groups.size();
+		boolean safe = false;
+		int i = 1;
 		for (PatternGroup group : groups) {
 			DyeColor colour = colours[random.nextInt(colours.length)];
+			if (colour == cuurentColour) safe = true;
+			if((i >= groupnum) && !safe){
+				colour = cuurentColour;
+			}
 			Wool groupMat = new Wool(material);
 			groupMat.setColor(colour);
-			
 			group.placeAt(location, groupMat, modified);
+			i++;
 		}
 	}
 	
