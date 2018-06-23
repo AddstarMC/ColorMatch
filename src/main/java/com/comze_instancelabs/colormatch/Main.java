@@ -2,7 +2,6 @@ package com.comze_instancelabs.colormatch;
 
 import java.io.IOException;
 
-import net.milkbowl.vault.economy.Economy;
 import au.com.addstar.signmaker.*;
 import au.com.mineauz.minigames.Minigames;
 import au.com.mineauz.minigames.mechanics.GameMechanics;
@@ -25,7 +24,6 @@ public class Main extends JavaPlugin implements Listener {
 
 	public static final DyeColor[] colors = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE};
 	public static final DyeColor[] extendedColor = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE,DyeColor.LIGHT_BLUE,DyeColor.BROWN,DyeColor.GRAY,DyeColor.LIME,DyeColor.MAGENTA,DyeColor.PINK,DyeColor.SILVER};
-	public static Economy econ = null;
 	public static SignMakerPlugin signmaker = null;
 	public static Main plugin;
 	
