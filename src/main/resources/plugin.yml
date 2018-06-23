@@ -1,7 +1,7 @@
 name: ColorMatch
-main: com.comze_instancelabs.colormatch.Main
+main: au.com.addstar.colormatch.Main
 version: ${plugin.version}
-author: instancelabs
+author: Narimm, addstarmc, instancelabs
 depend: [Minigames]
 commands:
    cm:
