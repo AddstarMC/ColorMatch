@@ -106,7 +106,7 @@ public class ColorMatchModule extends MinigameModule {
 	@Override
 	public void load(FileConfiguration config) {
 		if (config.isConfigurationSection("board")) {
-			game = new GameBoard(Minigames.plugin);
+			game = new GameBoard(Minigames.getPlugin());
 			World world = Bukkit.getWorld(config.getString("board.location.world"));
 			game.setSpawn(new Location(world, config.getInt("board.location.x"), config.getInt("board.location.y"), config.getInt("board.location.z")));
 			

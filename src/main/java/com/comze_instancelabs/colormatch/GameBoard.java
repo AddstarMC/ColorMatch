@@ -91,7 +91,7 @@ public class GameBoard {
 	
 	public void broadcast(String message) {
 		for (MinigamePlayer player : module.getMinigame().getPlayers()) {
-			player.sendMessage(message);
+			player.sendInfoMessage(message);
 		}
 	}
 	
@@ -163,7 +163,7 @@ public class GameBoard {
 	public void setSpectator(Player player) {
 		spectators.add(player);
 		
-		MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+		MinigamePlayer mplayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 		mplayer.setCanFly(true);
 		player.setFlying(true);
 		mplayer.teleport(getSpectatorSpawn());

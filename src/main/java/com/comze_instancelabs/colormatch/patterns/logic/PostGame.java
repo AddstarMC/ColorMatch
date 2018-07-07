@@ -36,7 +36,7 @@ public class PostGame extends TimerState {
 	@Override
 	protected void onNotifyTimeLeft(long remaining,	StateEngine<GameBoard> engine, GameBoard game) {
 		if (remaining == 0) {
-			Minigames.plugin.pdata.endMinigame(game.getMinigame(), winners, losers);
+			Minigames.getPlugin().getPlayerManager().endMinigame(game.getMinigame(), winners, losers);
 			game.stop();
 		}
 	}

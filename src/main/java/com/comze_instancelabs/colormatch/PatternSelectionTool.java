@@ -1,6 +1,6 @@
 package com.comze_instancelabs.colormatch;
 
-import org.bukkit.ChatColor;
+import au.com.mineauz.minigames.MinigameMessageType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversation;
@@ -8,6 +8,8 @@ import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
 import org.bukkit.conversations.Prompt;
 import org.bukkit.conversations.StringPrompt;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.comze_instancelabs.colormatch.patterns.CustomPattern;
@@ -57,14 +59,14 @@ public class PatternSelectionTool implements ToolMode {
 			return;
 		
 		if (corner1.getBlockY() != corner2.getBlockY()) {
-			player.sendMessage(ChatColor.RED + "Both corners must be on the same Y level. 3D platforms are not supported");
+			player.sendMessage("Both corners must be on the same Y level. 3D platforms are not supported",MinigameMessageType.ERROR);
 			return;
 		}
 		
 		int width = Math.abs(corner1.getBlockX() - corner2.getBlockX()) + 1;
 		int height = Math.abs(corner1.getBlockZ() - corner2.getBlockZ()) + 1;
 		
-		player.sendMessage(ChatColor.GOLD + "Size: " + width + "x" + height + ". " + (width*height) + " blocks total");
+		player.sendMessage( "Size: " + width + "x" + height + ". " + (width*height) + " blocks total", MinigameMessageType.INFO);
 	}
 
 	@Override
@@ -84,14 +86,14 @@ public class PatternSelectionTool implements ToolMode {
 						@Override
 						public Prompt acceptInput(ConversationContext context, String input) {
 							if (input.contains(" ") || input.contains(".") || input.contains("|")) {
-								player.sendMessage(ChatColor.RED + "Name contains invalid values");
+								player.sendMessage( "Name contains invalid values", MinigameMessageType.ERROR);
 							} else {
 								try {
 									PatternRegistry.addPattern(input, pattern);
 									PatternRegistry.save(input, pattern);
-									player.sendMessage(ChatColor.GREEN + "Pattern saved");
+									player.sendMessage(  "Pattern saved", MinigameMessageType.WIN);
 								} catch(IllegalArgumentException e) {
-									player.sendMessage(ChatColor.RED + "A pattern with that name already exists");
+									player.sendInfoMessage( "A pattern with that name already exists");
 								}
 							}
 							return Prompt.END_OF_CONVERSATION;
@@ -108,7 +110,7 @@ public class PatternSelectionTool implements ToolMode {
 		}
 		if (event.hasBlock()) {
 			corner1 = event.getClickedBlock().getLocation();
-			player.sendMessage(ChatColor.GREEN + String.format("[ColorMatch] Corner 1 set %d,%d,%d", corner1.getBlockX(), corner1.getBlockY(), corner1.getBlockZ()));
+			player.sendInfoMessage( String.format("[ColorMatch] Corner 1 set %d,%d,%d", corner1.getBlockX(), corner1.getBlockY(), corner1.getBlockZ()));
 			printState(player);
 		}
 	}
@@ -117,9 +119,19 @@ public class PatternSelectionTool implements ToolMode {
 	public void onRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEvent event) {
 		if (event.hasBlock()) {
 			corner2 = event.getClickedBlock().getLocation();
-			player.sendMessage(ChatColor.GREEN + String.format("[ColorMatch] Corner 2 set %d,%d,%d", corner2.getBlockX(), corner2.getBlockY(), corner2.getBlockZ()));
+			player.sendInfoMessage(String.format("[ColorMatch] Corner 2 set %d,%d,%d", corner2.getBlockX(), corner2.getBlockY(), corner2.getBlockZ()));
 			printState(player);
 		}
+	}
+
+	@Override
+	public void onEntityLeftClick(MinigamePlayer player, Minigame minigame, Team team, EntityDamageByEntityEvent event) {
+
+	}
+
+	@Override
+	public void onEntityRightClick(MinigamePlayer player, Minigame minigame, Team team, PlayerInteractEntityEvent event) {
+
 	}
 
 	@Override

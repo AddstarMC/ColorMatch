@@ -23,7 +23,7 @@ import au.com.mineauz.minigames.minigame.modules.MinigameModule;
 public class ColorMatchMechanic extends GameMechanicBase {
 	
 	private GameBoard getGame(Player player) {
-		MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+		MinigamePlayer mplayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 		if (mplayer.isInMinigame()) {
 			return getGame(mplayer.getMinigame());
 		}
@@ -54,7 +54,7 @@ public class ColorMatchMechanic extends GameMechanicBase {
 			if (player.getLocation().getY() < spectateSpawn.getY() - 0.5 || player.getLocation().getY() > spectateSpawn.getY() + 0.5) {
 				Location newLoc = player.getLocation();
 				newLoc.setY(spectateSpawn.getY());
-				MinigamePlayer mplayer = Minigames.plugin.pdata.getMinigamePlayer(player);
+				MinigamePlayer mplayer = Minigames.getPlugin().getPlayerManager().getMinigamePlayer(player);
 				mplayer.teleport(newLoc);
 				mplayer.getPlayer().setFlying(true);
 			}
@@ -90,7 +90,7 @@ public class ColorMatchMechanic extends GameMechanicBase {
 		if (player == null) {
 			Bukkit.getConsoleSender().sendMessage(message);
 		} else {
-			player.sendMessage(message);
+			player.sendInfoMessage(message);
 		}
 	}
 	
@@ -128,11 +128,11 @@ public class ColorMatchMechanic extends GameMechanicBase {
 	public void stopMinigame(Minigame minigame, MinigamePlayer player) {} // Only for global minigames
 
 	@Override
-	public void joinMinigame(Minigame minigame, MinigamePlayer player) {
+	public void onJoinMinigame(Minigame minigame, MinigamePlayer player) {
 		GameBoard game = getGame(minigame);
 		if (game == null)
 			return;
-		
+
 		game.joinArena(player.getPlayer());
 	}
 

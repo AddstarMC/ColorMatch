@@ -2,6 +2,7 @@ package com.comze_instancelabs.colormatch.menu;
 
 import java.util.Arrays;
 
+import au.com.mineauz.minigames.MinigameMessageType;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -107,7 +108,7 @@ public class PatternSelectMenu {
 			MinigamePlayer player = getContainer().getViewer();
 			player.setNoClose(true);
 			player.getPlayer().closeInventory();
-			player.sendMessage("Enter the weight of this pattern, an integer 1 or more. The higher its value, the more likely it is to be chosen. The menu will automatically reopen in 20s if nothing is entered.");
+			player.sendInfoMessage("Enter the weight of this pattern, an integer 1 or more. The higher its value, the more likely it is to be chosen. The menu will automatically reopen in 20s if nothing is entered.");
 			player.setManualEntry(this);
 			getContainer().startReopenTimer(20);;
 			
@@ -119,13 +120,13 @@ public class PatternSelectMenu {
 			try {
 				int weight = Integer.parseInt(entry);
 				if (weight < 1) {
-					getContainer().getViewer().sendMessage(ChatColor.RED + "Invalid weight value. Must be an integer 1 or higher.");
+					getContainer().getViewer().sendMessage( "Invalid weight value. Must be an integer 1 or higher.", MinigameMessageType.ERROR);
 				} else {
 					WeightedPattern wPattern = new WeightedPattern(weight, patternName, pattern);
 					previous.getGame().getPatternMap().add(wPattern);
 				}
 			} catch(NumberFormatException e) {
-				getContainer().getViewer().sendMessage(ChatColor.RED + "Invalid weight value. Must be an integer 1 or higher.");
+				getContainer().getViewer().sendMessage( "Invalid weight value. Must be an integer 1 or higher.", MinigameMessageType.ERROR);
 			}
 			
 			// Open the parent menu again

@@ -32,7 +32,7 @@ public class Main extends JavaPlugin implements Listener {
 		plugin = this;
 		getServer().getPluginManager().registerEvents(this, this);
 
-		Minigames.plugin.mdata.addModule(ColorMatchModule.class);
+		Minigames.getPlugin().getMinigameManager().addModule(ColorMatchModule.class);
 		GameMechanics.addGameMechanic(new ColorMatchMechanic());
 		ToolModes.addToolMode(new PatternSelectionTool());
 		
@@ -81,7 +81,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	@Override
 	public void onDisable() {
-		Minigames.plugin.mdata.removeModule("ColorMatch", ColorMatchModule.class);
+		Minigames.getPlugin().getMinigameManager().removeModule("ColorMatch", ColorMatchModule.class);
 		GameMechanics.removeGameMechanic("colormatch");
 		ToolModes.removeToolMode("CMPATTERN");
 	}
@@ -102,7 +102,7 @@ public class Main extends JavaPlugin implements Listener {
 				if (action.equalsIgnoreCase("setup")) {
 					if (args.length > 1) {
 						if (sender.hasPermission("colormatch.setup")) {
-							Minigame minigame = Minigames.plugin.mdata.getMinigame(args[1]);
+							Minigame minigame = Minigames.getPlugin().getMinigameManager().getMinigame(args[1]);
 							if (minigame == null) {
 								sender.sendMessage(ChatColor.RED + "Unknown minigame");
 								return true;
