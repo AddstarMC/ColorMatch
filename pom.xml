@@ -100,7 +100,7 @@
     <dependency>
     	<groupId>au.com.mineauz</groupId>
     	<artifactId>Minigames</artifactId>
-    	<version>1.12.2-SNAPSHOT</version>
+    	<version>1.12.2-RC</version>
     	<scope>provided</scope>
     </dependency>
   </dependencies>

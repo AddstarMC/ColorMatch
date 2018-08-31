@@ -31,13 +31,10 @@ public class Main extends JavaPlugin implements Listener {
 	public void onEnable() {
 		plugin = this;
 		getServer().getPluginManager().registerEvents(this, this);
-
 		Minigames.getPlugin().getMinigameManager().addModule(ColorMatchModule.class);
 		GameMechanics.addGameMechanic(new ColorMatchMechanic());
 		ToolModes.addToolMode(new PatternSelectionTool());
-		
 		PatternRegistry.loadSaved();
-		
 		loadDefaults();
 		saveConfig();
 
