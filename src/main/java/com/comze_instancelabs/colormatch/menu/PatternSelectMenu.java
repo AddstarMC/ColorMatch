@@ -56,7 +56,7 @@ public class PatternSelectMenu {
     	}
     	
     	// Add controls
-    	MenuItemCustom done = new MenuItemCustom("Back", Material.REDSTONE_TORCH_ON);
+    	MenuItemCustom done = new MenuItemCustom("Back", Material.REDSTONE_TORCH);
     	done.setClick(new InteractionInterface() {
 			@Override
 			public Object interact(Object object) {
@@ -78,8 +78,8 @@ public class PatternSelectMenu {
 			next.setPreviousPage(last);
 			
 			// Add controls
-			last.addItem(new MenuItemPage("Next Page", Material.EYE_OF_ENDER, next), 9 * (rows - 1) + 5);
-			next.addItem(new MenuItemPage("Previous Page", Material.EYE_OF_ENDER, last), 9 * (rows - 1) + 3);
+			last.addItem(new MenuItemPage("Next Page", Material.ENDER_EYE, next), 9 * (rows - 1) + 5);
+			next.addItem(new MenuItemPage("Previous Page", Material.ENDER_EYE, last), 9 * (rows - 1) + 3);
 			last = next;
 		}
 		

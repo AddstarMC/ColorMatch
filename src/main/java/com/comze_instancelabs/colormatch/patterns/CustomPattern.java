@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -73,20 +74,20 @@ public class CustomPattern extends PatternBase {
 			height = in.readUnsignedShort();
 			
 			// Read the materials
-			HashMap<Integer, MaterialData> mats = new HashMap<Integer, MaterialData>();
+			HashMap<Integer, Material> mats = new HashMap<>();
 			int matCount = in.readShort();
 			for(int i = 0; i < matCount; ++i) {
 				int id = in.readUnsignedShort();
 				String name = in.readUTF();
 				byte data = in.readByte();
 				
-				mats.put(id, new MaterialData(Material.valueOf(name), data));
+				mats.put(id, Material.valueOf(name));
 			}
 			
 			// Read pixels
 			pixels = new PatternPixel[width * height];
 			for (int i = 0; i < pixels.length; ++i) {
-				MaterialData material = mats.get(in.readUnsignedShort());
+				Material material = mats.get(in.readUnsignedShort());
 				if (material == null)
 					throw new IOException("Read an unknown material id");
 				
@@ -112,7 +113,7 @@ public class CustomPattern extends PatternBase {
 	
 	@SuppressWarnings("deprecation")
 	public boolean save(File file) {
-		HashMap<MaterialData, Integer> ids = new HashMap<MaterialData, Integer>();
+		HashMap<Material, Integer> ids = new HashMap<>();
 		int nextId = 0;
 		int[] pixelIds = new int[pixels.length];
 		
@@ -142,10 +143,9 @@ public class CustomPattern extends PatternBase {
 			
 			// Write material map
 			out.writeShort(ids.size());
-			for (Entry<MaterialData, Integer> entry : ids.entrySet()) {
+			for (Entry<Material, Integer> entry : ids.entrySet()) {
 				out.writeShort(entry.getValue());
-				out.writeUTF(entry.getKey().getItemType().name());
-				out.writeByte(entry.getKey().getData());
+				out.writeUTF(entry.getKey().name());
 			}
 			
 			// Write pixels
@@ -188,7 +188,7 @@ public class CustomPattern extends PatternBase {
 		for(int x = 0; x < width; ++x) {
 			for(int z = 0; z < height; ++z) {
 				Block block = corner1.getWorld().getBlockAt(minX+x, corner1.getBlockY(), minZ+z);
-				pattern.pixels[x + z * width] = new PatternPixel(x, z, block.getState().getData());
+				pattern.pixels[x + z * width] = new PatternPixel(x, z, block.getType());
 			}
 		}
 		

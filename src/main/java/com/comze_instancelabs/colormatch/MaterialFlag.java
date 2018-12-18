@@ -12,7 +12,7 @@ import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemList;
 
 public class MaterialFlag extends Flag<Material> {
-	private static final Material[] materials = new Material[] {Material.WOOL, Material.STAINED_CLAY, Material.STAINED_GLASS, Material.STAINED_GLASS_PANE, Material.CONCRETE};
+	private static final Material[] materials = new Material[] {Material.WHITE_WOOL, Material.WHITE_TERRACOTTA, Material.WHITE_STAINED_GLASS, Material.WHITE_STAINED_GLASS_PANE, Material.WHITE_CONCRETE};
 	private static final String[] materialNames = new String[] {"wool", "clay", "glass", "glass_pane", "concrete" };
 	
 	public MaterialFlag(Material def, String name) {

@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.comze_instancelabs</groupId>
   <artifactId>colormatch</artifactId>
-  <version>1.9.1</version>
+  <version>1.9.2-SNAPHOT</version>
   <name>ColorMatch</name>
   <scm>
     <connection>scm:git:git@github.com:AddstarMC/Colormatch.git</connection>
@@ -15,7 +15,8 @@
     <build.number/>
     <plugin.version>${project.version}-${build.number}</plugin.version>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
-    <spigot.version>1.12.2-R0.1-SNAPSHOT</spigot.version>
+    <spigot.version>${spigot.api.version}.2-R0.1-SNAPSHOT</spigot.version>
+    <spigot.api.version>1.13</spigot.api.version>
   </properties>
   <developers>
     <developer>
@@ -79,8 +80,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
       <version>${spigot.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -100,7 +101,7 @@
     <dependency>
     	<groupId>au.com.mineauz</groupId>
     	<artifactId>Minigames</artifactId>
-    	<version>1.12.2-RC</version>
+    	<version>1.13-SNAPSHOT</version>
     	<scope>provided</scope>
     </dependency>
   </dependencies>

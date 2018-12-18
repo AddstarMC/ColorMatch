@@ -6,12 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import com.comze_instancelabs.colormatch.Colors;
 import org.bukkit.DyeColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Wool;
+import org.bukkit.block.data.BlockData;
 
 import com.comze_instancelabs.colormatch.Main;
 
@@ -35,7 +35,7 @@ public abstract class PatternBase {
 			for (int y = 0; y < getHeight(); ++y) {
 				PatternPixel pixel = getPixel(x, y);
 				
-				if (pixel.material.getItemType() == Material.AIR || visited.contains(pixel))
+				if (pixel.material == Material.AIR || visited.contains(pixel))
 					continue;
 				
 				// Do a flood fill to find all matching blocks
@@ -113,9 +113,14 @@ public abstract class PatternBase {
 			if((i >= groupnum) && !safe){
 				colour = cuurentColour;
 			}
-			Wool groupMat = new Wool(material);
-			groupMat.setColor(colour);
-			group.placeAt(location, groupMat, modified);
+			Material mat = Colors.getColour(material,colour);
+			BlockData data;
+			if(mat==null){
+				data = material.createBlockData();
+			}else{
+				data = mat.createBlockData();
+			}
+			group.placeAt(location, data, modified);
 			i++;
 		}
 	}
@@ -126,9 +131,9 @@ public abstract class PatternBase {
 	public static class PatternPixel {
 		public final int offsetX;
 		public final int offsetY;
-		public final MaterialData material;
+		public final Material material;
 		
-		public PatternPixel(int offsetX, int offsetY, MaterialData material) {
+		public PatternPixel(int offsetX, int offsetY, Material material) {
 			this.offsetX = offsetX;
 			this.offsetY = offsetY;
 			this.material = material;
@@ -173,15 +178,11 @@ public abstract class PatternBase {
 			return pixels;
 		}
 		
-		@SuppressWarnings("deprecation")
-		public void placeAt(Location origin, MaterialData material, List<Block> modified) {
+		public void placeAt(Location origin, BlockData material, List<Block> modified) {
 			for (PatternPixel pixel : pixels) {
 				Location pixelLocation = pixel.getLocation(origin);
-				
 				Block block = pixelLocation.getBlock();
-				block.setType(material.getItemType());
-				block.setData(material.getData());
-				
+				block.setBlockData(material);
 				modified.add(block);
 			}
 		}

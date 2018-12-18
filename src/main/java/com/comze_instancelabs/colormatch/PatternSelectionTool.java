@@ -43,7 +43,7 @@ public class PatternSelectionTool implements ToolMode {
 
 	@Override
 	public Material getIcon() {
-		return Material.STAINED_CLAY;
+		return Material.WHITE_TERRACOTTA;
 	}
 
 	@Override

@@ -2,29 +2,30 @@ package com.comze_instancelabs.colormatch;
 
 import java.util.Map;
 
+import au.com.mineauz.minigames.Minigames;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Wool;
 
 import com.google.common.collect.Maps;
 
 public class Utilities {
+
 	public static DyeColor getBlockColour(Block block) {
 		Material mat = block.getType();
-		if (mat == Material.WOOL || mat == Material.STAINED_CLAY || mat == Material.STAINED_GLASS || mat == Material.STAINED_GLASS_PANE || mat == Material.CONCRETE) {
-			Wool wool = new Wool(mat, block.getData());
-			return wool.getColor();
-		}
-		
-		return null;
+		DyeColor color = Colors.getColour(mat);
+		return color;
 	}
 	
 	public static ItemStack makeItem(Material material, DyeColor colour) {
-		Wool wool = new Wool(colour);
-		return new ItemStack(material, 1, wool.getData());
+		Material mat =  Colors.getColour(material,colour);
+		if(mat==null){
+			Minigames.debugMessage("Could not create material from" +material.name() +" & " +colour.name());
+			mat=material;
+		}
+		return new ItemStack(mat, 1);
 	}
 	
 	private static Map<DyeColor, ChatColor> dyeChatMap;
@@ -43,7 +44,7 @@ public class Utilities {
 		dyeChatMap.put(DyeColor.PINK, ChatColor.LIGHT_PURPLE);
 		dyeChatMap.put(DyeColor.PURPLE, ChatColor.DARK_PURPLE);
 		dyeChatMap.put(DyeColor.RED, ChatColor.DARK_RED);
-		dyeChatMap.put(DyeColor.SILVER, ChatColor.GRAY);
+		dyeChatMap.put(DyeColor.LIGHT_GRAY, ChatColor.GRAY);
 		dyeChatMap.put(DyeColor.WHITE, ChatColor.WHITE);
 		dyeChatMap.put(DyeColor.YELLOW, ChatColor.YELLOW);
 	}

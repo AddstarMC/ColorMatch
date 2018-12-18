@@ -57,7 +57,7 @@ public class ColorMatchModule extends MinigameModule {
 		addFlag(superSigns = new IntegerFlag(0, "supersigns"));
 		addFlag(idleMessage = new StringFlag("Game Over", "idle-message"));
 		addFlag(roundsPerGame = new IntegerFlag(10, "rounds-per-game"));
-		addFlag(material = new MaterialFlag(Material.STAINED_CLAY, "material"));
+		addFlag(material = new MaterialFlag(Material.WHITE_TERRACOTTA, "material"));
 		addFlag(roundWaitTime = new IntegerFlag(2, "round-wait-time"));
 		addFlag(postGameTime = new IntegerFlag(2, "post-game-time"));
 		addFlag(initialRoundTime = new FloatFlag(2f, "round-initial-time"));
@@ -136,23 +136,23 @@ public class ColorMatchModule extends MinigameModule {
 		Menu menu = new Menu(6, getMinigame().getName(false), previous.getViewer());
 		menu.addItem(fallDepth.getMenuItem("Fall Depth", Material.FEATHER, Arrays.asList("The distance below the spawn ", "that a player must pass below to ", "be considered off the board"), 1, 255));
 		menu.addItem(floorDepth.getMenuItem("Floor Depth", Material.BRICK, 1, 255));
-		menu.addItem(material.getMenuItem("Board Material", Material.STAINED_CLAY, Arrays.asList("The base material the board", "is made of. The colour ", "of that material will be randomized")));
+		menu.addItem(material.getMenuItem("Board Material", Material.WHITE_TERRACOTTA, Arrays.asList("The base material the board", "is made of. The colour ", "of that material will be randomized")));
 		menu.addItem(spectatorHeight.getMenuItem("Spectate Height", Material.GLASS, Arrays.asList("The height above the board", "that spectators will hover at")));
 		menu.addItem(superSigns.getMenuItem("Super Sign Count", Material.SIGN, Arrays.asList("The number of super signs", "this game will attempt to use.", "They must be named as such ", "'colormatch_<minigame><#>'", "where <minigame> is the name ", "of the minigame and ", "<#> is the number of the sign ", "starting from 1"), 0, 10));
 		menu.addItem(idleMessage.getMenuItem("Idle Message", Material.BOOK, Arrays.asList("The message super signs", "will display after the game")));
-		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.DIODE, 0, Integer.MAX_VALUE));
-		menu.addItem(roundWaitTime.getMenuItem("Round Wait Time", Material.WATCH, Arrays.asList("The time between the colour", "being removed and a new round", "begining in seconds"), 0, 200));
-		menu.addItem(postGameTime.getMenuItem("Post Game Time", Material.WATCH, Arrays.asList("The time in seconds to", "wait after the game has", "ended"), 0, 200));
-		menu.addItem(initialRoundTime.getMenuItem("Initial Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "first round will last"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
-		menu.addItem(minimumRoundTime.getMenuItem("Minimum Round Time", Material.WATCH, Arrays.asList("The time in seconds the", "round time cannot go below"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
-		menu.addItem(roundSpan.getMenuItem("Round Time Span", Material.WATCH, Arrays.asList("The number of rounds","to decrease the time","to the minimum time","from the initial time.","After this, the time","will just be the minimum","time."), 1, Integer.MAX_VALUE));
-		menu.addItem(roundDelay.getMenuItem("Round Time Decrease Delay", Material.DIODE, Arrays.asList("The number of rounds ", "to wait before starting ", "to decrease the round time"), 0, Integer.MAX_VALUE));
+		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.REPEATER, 0, Integer.MAX_VALUE));
+		menu.addItem(roundWaitTime.getMenuItem("Round Wait Time", Material.CLOCK, Arrays.asList("The time between the colour", "being removed and a new round", "begining in seconds"), 0, 200));
+		menu.addItem(postGameTime.getMenuItem("Post Game Time", Material.CLOCK, Arrays.asList("The time in seconds to", "wait after the game has", "ended"), 0, 200));
+		menu.addItem(initialRoundTime.getMenuItem("Initial Round Time", Material.CLOCK, Arrays.asList("The time in seconds the", "first round will last"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
+		menu.addItem(minimumRoundTime.getMenuItem("Minimum Round Time", Material.CLOCK, Arrays.asList("The time in seconds the", "round time cannot go below"), 0.1, 0.1, 0.1, Double.MAX_VALUE));
+		menu.addItem(roundSpan.getMenuItem("Round Time Span", Material.CLOCK, Arrays.asList("The number of rounds","to decrease the time","to the minimum time","from the initial time.","After this, the time","will just be the minimum","time."), 1, Integer.MAX_VALUE));
+		menu.addItem(roundDelay.getMenuItem("Round Time Decrease Delay", Material.REPEATER, Arrays.asList("The number of rounds ", "to wait before starting ", "to decrease the round time"), 0, Integer.MAX_VALUE));
 		menu.addItem(extendedColors.getMenuItem("Extended Colors", Material.REDSTONE, Arrays.asList(" Use and Extended", "Color Pallete if" , "true")));
 		
 		if (game != null)
-			menu.addItem(new MenuItemShowPatterns("Edit Patterns", Material.STAINED_CLAY, game));
+			menu.addItem(new MenuItemShowPatterns("Edit Patterns", Material.WHITE_TERRACOTTA, game));
 		
-		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH_ON, previous), menu.getSize() - 9);
+		menu.addItem(new MenuItemPage("Back", Material.REDSTONE_TORCH, previous), menu.getSize() - 9);
 		menu.displayMenu(previous.getViewer());
 		return true;
 	}

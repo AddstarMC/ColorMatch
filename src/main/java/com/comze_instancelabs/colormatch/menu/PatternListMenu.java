@@ -55,7 +55,7 @@ public class PatternListMenu {
     	
     	// Add controls
     	menu.addItem(new MenuItemBack(container), menu.getSize() - 9);
-    	menu.addItem(new MenuItemAddPattern("Add Pattern", Material.STAINED_CLAY, this), menu.getSize() - 1);
+    	menu.addItem(new MenuItemAddPattern("Add Pattern", Material.WHITE_TERRACOTTA, this), menu.getSize() - 1);
 		
 		return menu;
     }
@@ -69,8 +69,8 @@ public class PatternListMenu {
 			next.setPreviousPage(last);
 			
 			// Add controls
-			last.addItem(new MenuItemPage("Next Page", Material.EYE_OF_ENDER, next), 9 * (rows - 1) + 5);
-			next.addItem(new MenuItemPage("Previous Page", Material.EYE_OF_ENDER, last), 9 * (rows - 1) + 3);
+			last.addItem(new MenuItemPage("Next Page", Material.ENDER_EYE, next), 9 * (rows - 1) + 5);
+			next.addItem(new MenuItemPage("Previous Page", Material.ENDER_EYE, last), 9 * (rows - 1) + 3);
 			last = next;
 		}
 		

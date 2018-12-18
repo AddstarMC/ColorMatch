@@ -26,13 +26,13 @@ public class SquaresPattern extends PatternBase {
 		pixels = new PatternPixel[getWidth() * getHeight()];
 		
 		// The material doesnt matter as long as the squares are separated
-		MaterialData even = new MaterialData(Material.STONE);
-		MaterialData odd = new MaterialData(Material.DIRT);
+		Material even = Material.STONE;
+		Material odd = Material.DIRT;
 		
 		// Each square
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
-				MaterialData mat;
+				Material mat;
 				if ((x + y) % 2 == 0)
 					mat = even;
 				else

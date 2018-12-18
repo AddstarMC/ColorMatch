@@ -1,6 +1,7 @@
 name: ColorMatch
 main: com.comze_instancelabs.colormatch.Main
 version: ${plugin.version}
+api-version: ${spigot.api.version}
 author: instancelabs
 depend: [Minigames]
 commands:
