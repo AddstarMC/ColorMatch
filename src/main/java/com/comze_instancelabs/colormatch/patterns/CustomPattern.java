@@ -1,20 +1,20 @@
 package com.comze_instancelabs.colormatch.patterns;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 
+import au.com.mineauz.minigames.Minigames;
+import com.comze_instancelabs.colormatch.Colors;
 import org.apache.commons.lang.Validate;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.material.Dye;
 import org.bukkit.material.MaterialData;
+import org.bukkit.material.Wood;
+import org.bukkit.material.Wool;
 
 public class CustomPattern extends PatternBase {
 	private static final String fileHeader = "CMPAT";
@@ -54,7 +54,6 @@ public class CustomPattern extends PatternBase {
 		return true;
 	}
 
-	@SuppressWarnings("deprecation")
 	public boolean load(File file) {
 		DataInputStream in = null;
 		try	{
@@ -66,37 +65,14 @@ public class CustomPattern extends PatternBase {
 			}
 			
 			int version = in.readUnsignedByte();
-			if (version != 1) {
-				return false;
+			switch (version){
+				case 1:
+					return loadVersion1(in,file);
+				case 2:
+					return loadVersion2(in);
+					default:
+						return false;
 			}
-			
-			width = in.readUnsignedShort();
-			height = in.readUnsignedShort();
-			
-			// Read the materials
-			HashMap<Integer, Material> mats = new HashMap<>();
-			int matCount = in.readShort();
-			for(int i = 0; i < matCount; ++i) {
-				int id = in.readUnsignedShort();
-				String name = in.readUTF();
-				byte data = in.readByte();
-				
-				mats.put(id, Material.valueOf(name));
-			}
-			
-			// Read pixels
-			pixels = new PatternPixel[width * height];
-			for (int i = 0; i < pixels.length; ++i) {
-				Material material = mats.get(in.readUnsignedShort());
-				if (material == null)
-					throw new IOException("Read an unknown material id");
-				
-				int x = i % width;
-				int y = i / width;
-				pixels[i] = new PatternPixel(x, y, material);
-			}
-			
-			return true;
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
@@ -104,14 +80,73 @@ public class CustomPattern extends PatternBase {
 			if (in != null) {
 				try {
 					in.close();
-				} catch(IOException e) {}
+				} catch(IOException ignored) {}
 			}
 		}
 	}
+	private boolean loadVersion2(DataInputStream in) throws IOException{
+		width = in.readUnsignedShort();
+		height = in.readUnsignedShort();
+
+		// Read the materials
+		HashMap<Integer, Material> mats = new HashMap<>();
+		int matCount = in.readShort();
+		for(int i = 0; i < matCount; ++i) {
+			int id = in.readUnsignedShort();
+			String name = in.readUTF();
+			Material mat = Material.matchMaterial(name);
+			if(mat == null){
+				throw new IOException("Unknown material: " + name);
+			}
+			mats.put(id, mat);
+		}
+		return readPixels(mats,in);
+		// Read pixels
+
+	}
+	private boolean readPixels(HashMap<Integer, Material> mats, DataInputStream in) throws IOException{
+		pixels = new PatternPixel[width * height];
+		for (int i = 0; i < pixels.length; ++i) {
+			Material material = mats.get(in.readUnsignedShort());
+			if (material == null)
+				throw new IOException("Read an unknown material id");
+
+			int x = i % width;
+			int y = i / width;
+			pixels[i] = new PatternPixel(x, y, material);
+		}
+		return true;
+	}
+	private boolean loadVersion1(DataInputStream in, File file) throws IOException{
+		width = in.readUnsignedShort();
+		height = in.readUnsignedShort();
+
+		// Read the materials
+		HashMap<Integer, Material> mats = new HashMap<>();
+		int matCount = in.readShort();
+		for(int i = 0; i < matCount; ++i) {
+			int id = in.readUnsignedShort();
+			String name = in.readUTF();
+			byte data = in.readByte();
+			Material mat;
+			try {
+				mat = Material.valueOf(name);
+			}catch (IllegalArgumentException e){
+				Minigames.log(Level.WARNING,"Pattern has Legacy Materials - it may require remaking : " +file.getCanonicalPath());
+				Minigames.log(Level.WARNING,e.getMessage());
+				mat = Material.getMaterial(name,true);
+
+				if(mat == null){
+					Wool wool = new Wool(DyeColor.getByWoolData(data));
+					wool.getColor();
+					mat = Colors.getColour(Material.WHITE_TERRACOTTA,wool.getColor());
+				}
+			}
+			mats.put(id, mat);
+		}
+		return readPixels(mats,in);
+	}
 	
-	
-	
-	@SuppressWarnings("deprecation")
 	public boolean save(File file) {
 		HashMap<Material, Integer> ids = new HashMap<>();
 		int nextId = 0;
@@ -136,7 +171,7 @@ public class CustomPattern extends PatternBase {
 			out = new DataOutputStream(stream);
 			
 			out.writeChars(fileHeader);
-			out.writeByte(1); // Version
+			out.writeByte(2); // Version
 			
 			out.writeShort(width);
 			out.writeShort(height);
@@ -160,7 +195,7 @@ public class CustomPattern extends PatternBase {
 			if (out != null) {
 				try {
 					out.close();
-				} catch(IOException e) {}
+				} catch(IOException ignored) {}
 			}
 		}
 	}
