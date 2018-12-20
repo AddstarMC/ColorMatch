@@ -11,7 +11,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -101,7 +100,7 @@ public class GameBoard {
 				String signName = "colormatch_" + getMinigame().getName(false) + i;
 				TextSign sign = Main.signmaker.getSign(signName);
 				if (sign != null) {
-					sign.setMaterial(new MaterialData(getMaterial(), colour.getWoolData()));
+					sign.setMaterial(Colors.modifyColour(getMaterial(),colour));
 					sign.setText(message);
 					sign.redraw();
 				}

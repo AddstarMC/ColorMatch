@@ -3,208 +3,93 @@ package com.comze_instancelabs.colormatch;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+
 
 /**
  * Created for use for the Add5tar MC Minecraft server
  * Created by benjamincharlton on 19/12/2018.
  */
 public class Colors  {
-    private static List<ColourList> colours = new ArrayList<>();
-
+    private static Map<DyeColor, Set<Material>> colours = new EnumMap<>(DyeColor.class);
+    private static Map<Material,DyeColor> materialMap = new EnumMap<>(Material.class);
     static {
-        List<Material> red = new ArrayList<>();
-        List<Material> pink = new ArrayList<>();
-        List<Material> yellow = new ArrayList<>();
-        List<Material> cyan = new ArrayList<>();
-        List<Material> lime = new ArrayList<>();
-        List<Material> green = new ArrayList<>();
-        List<Material> blue = new ArrayList<>();
-        List<Material> black = new ArrayList<>();
-        List<Material> brown = new ArrayList<>();
-        List<Material> white = new ArrayList<>();
-        List<Material> gray = new ArrayList<>();
-        List<Material> light_gray = new ArrayList<>();
-        List<Material> magenta = new ArrayList<>();
-        List<Material> light_blue = new ArrayList<>();
-        List<Material> purple = new ArrayList<>();
-
-        red.add(Material.RED_CONCRETE);
-        red.add(Material.RED_CONCRETE_POWDER);
-        red.add(Material.RED_GLAZED_TERRACOTTA);
-        red.add(Material.RED_STAINED_GLASS);
-        red.add(Material.RED_STAINED_GLASS_PANE);
-        red.add(Material.RED_TERRACOTTA);
-        red.add(Material.RED_WOOL);
-        colours.add(new ColourList(DyeColor.RED,red));
-        pink.add(Material.PINK_CONCRETE);
-        pink.add(Material.PINK_CONCRETE_POWDER);
-        pink.add(Material.PINK_GLAZED_TERRACOTTA);
-        pink.add(Material.PINK_STAINED_GLASS);
-        pink.add(Material.PINK_STAINED_GLASS_PANE);
-        pink.add(Material.PINK_TERRACOTTA);
-        pink.add(Material.PINK_WOOL);
-        colours.add(new ColourList(DyeColor.PINK,pink));
-
-        yellow.add(Material.YELLOW_CONCRETE);
-        yellow.add(Material.YELLOW_CONCRETE_POWDER);
-        yellow.add(Material.YELLOW_GLAZED_TERRACOTTA);
-        yellow.add(Material.YELLOW_STAINED_GLASS);
-        yellow.add(Material.YELLOW_STAINED_GLASS_PANE);
-        yellow.add(Material.YELLOW_TERRACOTTA);
-        yellow.add(Material.YELLOW_WOOL);
-        colours.add(new ColourList(DyeColor.YELLOW,yellow));
-
-        List<Material> orange = new ArrayList<>();
-        orange.add(Material.ORANGE_CONCRETE);
-        orange.add(Material.ORANGE_CONCRETE_POWDER);
-        orange.add(Material.ORANGE_GLAZED_TERRACOTTA);
-        orange.add(Material.ORANGE_STAINED_GLASS);
-        orange.add(Material.ORANGE_STAINED_GLASS_PANE);
-        orange.add(Material.ORANGE_TERRACOTTA);
-        orange.add(Material.ORANGE_WOOL);
-        colours.add(new ColourList(DyeColor.ORANGE,orange));
-
-        lime.add(Material.LIME_CONCRETE);
-        lime.add(Material.LIME_CONCRETE_POWDER);
-        lime.add(Material.LIME_GLAZED_TERRACOTTA);
-        lime.add(Material.LIME_STAINED_GLASS);
-        lime.add(Material.LIME_STAINED_GLASS_PANE);
-        lime.add(Material.LIME_TERRACOTTA);
-        lime.add(Material.LIME_WOOL);
-        colours.add(new ColourList(DyeColor.LIME,lime));
-
-        cyan.add(Material.CYAN_CONCRETE);
-        cyan.add(Material.CYAN_CONCRETE_POWDER);
-        cyan.add(Material.CYAN_GLAZED_TERRACOTTA);
-        cyan.add(Material.CYAN_STAINED_GLASS);
-        cyan.add(Material.CYAN_STAINED_GLASS_PANE);
-        cyan.add(Material.CYAN_TERRACOTTA);
-        cyan.add(Material.CYAN_WOOL);
-        colours.add(new ColourList(DyeColor.CYAN,cyan));
-
-        blue.add(Material.BLUE_CONCRETE);
-        blue.add(Material.BLUE_CONCRETE_POWDER);
-        blue.add(Material.BLUE_GLAZED_TERRACOTTA);
-        blue.add(Material.BLUE_STAINED_GLASS);
-        blue.add(Material.BLUE_STAINED_GLASS_PANE);
-        blue.add(Material.BLUE_TERRACOTTA);
-        blue.add(Material.BLUE_WOOL);
-        colours.add(new ColourList(DyeColor.BLUE,blue));
-
-        light_blue.add(Material.LIGHT_BLUE_CONCRETE);
-        light_blue.add(Material.LIGHT_BLUE_CONCRETE_POWDER);
-        light_blue.add(Material.LIGHT_BLUE_GLAZED_TERRACOTTA);
-        light_blue.add(Material.LIGHT_BLUE_STAINED_GLASS);
-        light_blue.add(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
-        light_blue.add(Material.LIGHT_BLUE_TERRACOTTA);
-        light_blue.add(Material.LIGHT_BLUE_WOOL);
-        colours.add(new ColourList(DyeColor.LIGHT_BLUE,light_blue));
-
-        green.add(Material.GREEN_CONCRETE);
-        green.add(Material.GREEN_CONCRETE_POWDER);
-        green.add(Material.GREEN_GLAZED_TERRACOTTA);
-        green.add(Material.GREEN_STAINED_GLASS);
-        green.add(Material.GREEN_STAINED_GLASS_PANE);
-        green.add(Material.GREEN_TERRACOTTA);
-        green.add(Material.GREEN_WOOL);
-        colours.add(new ColourList(DyeColor.GREEN,green));
-
-        purple.add(Material.PURPLE_CONCRETE);
-        purple.add(Material.PURPLE_CONCRETE_POWDER);
-        purple.add(Material.PURPLE_GLAZED_TERRACOTTA);
-        purple.add(Material.PURPLE_STAINED_GLASS);
-        purple.add(Material.PURPLE_STAINED_GLASS_PANE);
-        purple.add(Material.PURPLE_TERRACOTTA);
-        purple.add(Material.PURPLE_WOOL);
-        colours.add(new ColourList(DyeColor.PURPLE,purple));
-
-        magenta.add(Material.MAGENTA_CONCRETE);
-        magenta.add(Material.MAGENTA_CONCRETE_POWDER);
-        magenta.add(Material.MAGENTA_GLAZED_TERRACOTTA);
-        magenta.add(Material.MAGENTA_STAINED_GLASS);
-        magenta.add(Material.MAGENTA_STAINED_GLASS_PANE);
-        magenta.add(Material.MAGENTA_TERRACOTTA);
-        magenta.add(Material.MAGENTA_WOOL);
-        colours.add(new ColourList(DyeColor.MAGENTA,magenta));
-
-        light_gray.add(Material.LIGHT_GRAY_CONCRETE);
-        light_gray.add(Material.LIGHT_GRAY_CONCRETE_POWDER);
-        light_gray.add(Material.LIGHT_GRAY_GLAZED_TERRACOTTA);
-        light_gray.add(Material.LIGHT_GRAY_STAINED_GLASS);
-        light_gray.add(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
-        light_gray.add(Material.LIGHT_GRAY_TERRACOTTA);
-        light_gray.add(Material.LIGHT_GRAY_WOOL);
-        colours.add(new ColourList(DyeColor.LIGHT_GRAY,light_gray));
-
-        gray.add(Material.GRAY_CONCRETE);
-        gray.add(Material.GRAY_CONCRETE_POWDER);
-        gray.add(Material.GRAY_GLAZED_TERRACOTTA);
-        gray.add(Material.GRAY_STAINED_GLASS);
-        gray.add(Material.GRAY_STAINED_GLASS_PANE);
-        gray.add(Material.GRAY_TERRACOTTA);
-        gray.add(Material.GRAY_WOOL);
-        colours.add(new ColourList(DyeColor.GRAY,gray));
-
-        black.add(Material.BLACK_CONCRETE);
-        black.add(Material.BLACK_CONCRETE_POWDER);
-        black.add(Material.BLACK_GLAZED_TERRACOTTA);
-        black.add(Material.BLACK_STAINED_GLASS);
-        black.add(Material.BLACK_STAINED_GLASS_PANE);
-        black.add(Material.BLACK_TERRACOTTA);
-        black.add(Material.BLACK_WOOL);
-        colours.add(new ColourList(DyeColor.BLACK,black));
-
-        white.add(Material.WHITE_CONCRETE);
-        white.add(Material.WHITE_CONCRETE_POWDER);
-        white.add(Material.WHITE_GLAZED_TERRACOTTA);
-        white.add(Material.WHITE_STAINED_GLASS);
-        white.add(Material.WHITE_STAINED_GLASS_PANE);
-        white.add(Material.WHITE_TERRACOTTA);
-        white.add(Material.WHITE_WOOL);
-        colours.add(new ColourList(DyeColor.WHITE,white));
-
-        brown.add(Material.BROWN_CONCRETE);
-        brown.add(Material.BROWN_CONCRETE_POWDER);
-        brown.add(Material.BROWN_GLAZED_TERRACOTTA);
-        brown.add(Material.BROWN_STAINED_GLASS);
-        brown.add(Material.BROWN_STAINED_GLASS_PANE);
-        brown.add(Material.BROWN_TERRACOTTA);
-        brown.add(Material.BROWN_WOOL);
-        colours.add(new ColourList(DyeColor.BROWN,brown));
-
+        Set<Material> red = EnumSet.of(
+                Material.RED_CONCRETE,
+                Material.RED_CONCRETE_POWDER,
+                Material.RED_GLAZED_TERRACOTTA,
+                Material.RED_STAINED_GLASS,
+                Material.RED_STAINED_GLASS_PANE,
+                Material.RED_TERRACOTTA,
+                Material.RED_WOOL);
+        colours.put(DyeColor.RED,red);
+        Set<Material> pink = EnumSet.of(
+                Material.PINK_CONCRETE,
+                Material.PINK_CONCRETE_POWDER,
+                Material.PINK_GLAZED_TERRACOTTA,
+                Material.PINK_STAINED_GLASS,
+                Material.PINK_STAINED_GLASS_PANE,
+                Material.PINK_TERRACOTTA,
+                Material.PINK_WOOL);
+        colours.put(DyeColor.PINK,pink);
+        Set<Material> yellow = EnumSet.of(Material.YELLOW_CONCRETE,Material.YELLOW_CONCRETE_POWDER,Material.YELLOW_GLAZED_TERRACOTTA,Material.YELLOW_STAINED_GLASS,Material.YELLOW_STAINED_GLASS_PANE,Material.YELLOW_TERRACOTTA,Material.YELLOW_WOOL);
+        colours.put(DyeColor.YELLOW,yellow);
+        Set<Material> orange = EnumSet.of(Material.ORANGE_CONCRETE,Material.ORANGE_CONCRETE_POWDER,Material.ORANGE_GLAZED_TERRACOTTA,Material.ORANGE_STAINED_GLASS,Material.ORANGE_STAINED_GLASS_PANE,Material.ORANGE_TERRACOTTA,Material.ORANGE_WOOL);
+        colours.put(DyeColor.ORANGE,orange);
+        Set<Material> lime = EnumSet.of(Material.LIME_CONCRETE,Material.LIME_CONCRETE_POWDER,Material.LIME_GLAZED_TERRACOTTA,Material.LIME_STAINED_GLASS,Material.LIME_STAINED_GLASS_PANE,Material.LIME_TERRACOTTA,Material.LIME_WOOL);
+        colours.put(DyeColor.LIME,lime);
+        Set<Material> cyan = EnumSet.of(Material.CYAN_CONCRETE,Material.CYAN_CONCRETE_POWDER,Material.CYAN_GLAZED_TERRACOTTA,Material.CYAN_STAINED_GLASS,Material.CYAN_STAINED_GLASS_PANE,Material.CYAN_TERRACOTTA,Material.CYAN_WOOL);
+        colours.put(DyeColor.CYAN,cyan);
+        Set<Material> blue = EnumSet.of(Material.BLUE_CONCRETE,Material.BLUE_CONCRETE_POWDER,Material.BLUE_GLAZED_TERRACOTTA,Material.BLUE_STAINED_GLASS,Material.BLUE_STAINED_GLASS_PANE,Material.BLUE_TERRACOTTA,Material.BLUE_WOOL);
+        colours.put(DyeColor.BLUE,blue);
+        Set<Material> light_blue = EnumSet.of(Material.LIGHT_BLUE_CONCRETE,Material.LIGHT_BLUE_CONCRETE_POWDER,Material.LIGHT_BLUE_GLAZED_TERRACOTTA,Material.LIGHT_BLUE_STAINED_GLASS,Material.LIGHT_BLUE_STAINED_GLASS_PANE,Material.LIGHT_BLUE_TERRACOTTA,Material.LIGHT_BLUE_WOOL);
+        colours.put(DyeColor.LIGHT_BLUE,light_blue);
+        Set<Material> green = EnumSet.of(Material.GREEN_CONCRETE,Material.GREEN_CONCRETE_POWDER,Material.GREEN_GLAZED_TERRACOTTA,Material.GREEN_STAINED_GLASS,Material.GREEN_STAINED_GLASS_PANE,Material.GREEN_TERRACOTTA,Material.GREEN_WOOL);
+        colours.put(DyeColor.GREEN,green);
+        Set<Material> purple = EnumSet.of(Material.PURPLE_CONCRETE,Material.PURPLE_CONCRETE_POWDER,Material.PURPLE_GLAZED_TERRACOTTA,Material.PURPLE_STAINED_GLASS,Material.PURPLE_STAINED_GLASS_PANE,Material.PURPLE_TERRACOTTA,Material.PURPLE_WOOL);
+        colours.put(DyeColor.PURPLE,purple);
+        Set<Material> magenta = EnumSet.of(Material.MAGENTA_CONCRETE,Material.MAGENTA_CONCRETE_POWDER,Material.MAGENTA_GLAZED_TERRACOTTA,Material.MAGENTA_STAINED_GLASS,Material.MAGENTA_STAINED_GLASS_PANE,Material.MAGENTA_TERRACOTTA,Material.MAGENTA_WOOL);
+        colours.put(DyeColor.MAGENTA,magenta);
+        Set<Material> light_gray = EnumSet.of(Material.LIGHT_GRAY_CONCRETE,Material.LIGHT_GRAY_CONCRETE_POWDER,Material.LIGHT_GRAY_GLAZED_TERRACOTTA,Material.LIGHT_GRAY_STAINED_GLASS,Material.LIGHT_GRAY_STAINED_GLASS_PANE,Material.LIGHT_GRAY_TERRACOTTA,Material.LIGHT_GRAY_WOOL);
+        colours.put(DyeColor.LIGHT_GRAY,light_gray);
+        Set<Material> gray = EnumSet.of(Material.GRAY_CONCRETE,Material.GRAY_CONCRETE_POWDER,Material.GRAY_GLAZED_TERRACOTTA,Material.GRAY_STAINED_GLASS,Material.GRAY_STAINED_GLASS_PANE,Material.GRAY_TERRACOTTA,Material.GRAY_WOOL);
+        colours.put(DyeColor.GRAY,gray);
+        Set<Material> black = EnumSet.of(Material.BLACK_CONCRETE,Material.BLACK_CONCRETE_POWDER,Material.BLACK_GLAZED_TERRACOTTA,Material.BLACK_STAINED_GLASS,Material.BLACK_STAINED_GLASS_PANE,Material.BLACK_TERRACOTTA,Material.BLACK_WOOL);
+        colours.put(DyeColor.BLACK,black);
+        Set<Material> white = EnumSet.of(Material.WHITE_CONCRETE,Material.WHITE_CONCRETE_POWDER,Material.WHITE_GLAZED_TERRACOTTA,Material.WHITE_STAINED_GLASS,Material.WHITE_STAINED_GLASS_PANE,Material.WHITE_TERRACOTTA,Material.WHITE_WOOL);
+        colours.put(DyeColor.WHITE,white);
+        Set<Material> brown = EnumSet.of(Material.BROWN_CONCRETE,Material.BROWN_CONCRETE_POWDER,Material.BROWN_GLAZED_TERRACOTTA,Material.BROWN_STAINED_GLASS,Material.BROWN_STAINED_GLASS_PANE,Material.BROWN_TERRACOTTA,Material.BROWN_WOOL);
+        colours.put(DyeColor.BROWN,brown);
+    
+        for(Map.Entry<DyeColor,Set<Material>> entry:colours.entrySet()) {
+            for(Material mat:entry.getValue()){
+                materialMap.put(mat,entry.getKey());
+            }
+        }
+    }
+    
+    private static String baseMaterialName(Material material){
+        DyeColor color = getColour(material);
+        String name = material.name().replace(color.name()+"_","");
+        return name;
     }
 
     public static DyeColor getColour(Material material){
-        for(ColourList list:colours){
-            if(list.materials.contains(material))
-                return list.colour;
-        }
-        return null;
+        return materialMap.get(material);
+    }
+    
+    public static boolean isColorable(Material material){
+        return materialMap.containsKey(material);
     }
 
-    public static Material getColour(Material base, DyeColor color){
-        String baseName = base.name().toUpperCase();
-        String raw = baseName.replace("WHITE","");
-        for(ColourList list:colours){
-            if(list.colour.equals(color)){
-                for(Material mat: list.materials){
-                    if(mat.name().toUpperCase().contains(raw)){
-                        return mat;
-                    }
-                }
-            }
+    public static Material modifyColour(Material material, DyeColor color){
+        if(isColorable(material)){
+            String newMatName = color.name()+"_"+baseMaterialName(material);
+            return Material.matchMaterial(newMatName);
         }
         return null;
-    }
-
-    private static class ColourList {
-         DyeColor colour;
-         List<Material> materials;
-         ColourList(DyeColor color, List<Material> materials ){
-             this.colour = color;
-             this.materials = materials;
-         }
     }
 }

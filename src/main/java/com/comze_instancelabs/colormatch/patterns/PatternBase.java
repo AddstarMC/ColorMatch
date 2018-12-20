@@ -113,7 +113,7 @@ public abstract class PatternBase {
 			if((i >= groupnum) && !safe){
 				colour = cuurentColour;
 			}
-			Material mat = Colors.getColour(material,colour);
+			Material mat = Colors.modifyColour(material,colour);
 			BlockData data;
 			if(mat==null){
 				data = material.createBlockData();

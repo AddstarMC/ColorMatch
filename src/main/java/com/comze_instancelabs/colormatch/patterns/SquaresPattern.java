@@ -1,7 +1,6 @@
 package com.comze_instancelabs.colormatch.patterns;
 
 import org.bukkit.Material;
-import org.bukkit.material.MaterialData;
 
 /**
  * A pattern consisting of squares each 4x4 blocks

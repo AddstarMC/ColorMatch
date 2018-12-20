@@ -10,10 +10,6 @@ import com.comze_instancelabs.colormatch.Colors;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.material.Dye;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Wood;
 import org.bukkit.material.Wool;
 
 public class CustomPattern extends PatternBase {
@@ -139,7 +135,7 @@ public class CustomPattern extends PatternBase {
 				if(mat == null){
 					Wool wool = new Wool(DyeColor.getByWoolData(data));
 					wool.getColor();
-					mat = Colors.getColour(Material.WHITE_TERRACOTTA,wool.getColor());
+					mat = Colors.modifyColour(Material.WHITE_TERRACOTTA,wool.getColor());
 				}
 			}
 			mats.put(id, mat);

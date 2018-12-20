@@ -1,5 +1,6 @@
 package com.comze_instancelabs.colormatch;
 
+import java.util.EnumMap;
 import java.util.Map;
 
 import au.com.mineauz.minigames.Minigames;
@@ -8,8 +9,6 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
-
-import com.google.common.collect.Maps;
 
 public class Utilities {
 
@@ -20,7 +19,7 @@ public class Utilities {
 	}
 	
 	public static ItemStack makeItem(Material material, DyeColor colour) {
-		Material mat =  Colors.getColour(material,colour);
+		Material mat =  Colors.modifyColour(material,colour);
 		if(mat==null){
 			Minigames.debugMessage("Could not create material from" +material.name() +" & " +colour.name());
 			mat=material;
@@ -30,7 +29,7 @@ public class Utilities {
 	
 	private static Map<DyeColor, ChatColor> dyeChatMap;
 	static {
-		dyeChatMap = Maps.newHashMap();
+		dyeChatMap = new EnumMap<>(DyeColor.class);
 		dyeChatMap.put(DyeColor.BLACK, ChatColor.DARK_GRAY);
 		dyeChatMap.put(DyeColor.BLUE, ChatColor.DARK_BLUE);
 		dyeChatMap.put(DyeColor.BROWN, ChatColor.GOLD);
