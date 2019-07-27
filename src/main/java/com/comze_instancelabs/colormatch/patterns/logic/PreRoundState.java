@@ -1,11 +1,11 @@
 package com.comze_instancelabs.colormatch.patterns.logic;
 
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.DyeColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import au.com.mineauz.minigames.MinigamePlayer;
 
 import com.comze_instancelabs.colormatch.GameBoard;
 import com.comze_instancelabs.colormatch.Utilities;

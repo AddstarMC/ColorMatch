@@ -1,9 +1,9 @@
 package com.comze_instancelabs.colormatch.patterns.logic;
 
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import au.com.mineauz.minigames.MinigamePlayer;
 
 import com.comze_instancelabs.colormatch.GameBoard;
 

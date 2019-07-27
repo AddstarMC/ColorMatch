@@ -16,7 +16,7 @@
     <plugin.version>${project.version}-${build.number}</plugin.version>
     <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     <spigot.version>${spigot.api.version}.2-R0.1-SNAPSHOT</spigot.version>
-    <spigot.api.version>1.13</spigot.api.version>
+    <spigot.api.version>1.14</spigot.api.version>
   </properties>
   <developers>
     <developer>
@@ -102,7 +102,7 @@
     <dependency>
     	<groupId>au.com.mineauz</groupId>
     	<artifactId>Minigames</artifactId>
-    	<version>1.13-SNAPSHOT</version>
+    	<version>1.14-SNAPSHOT</version>
     	<scope>provided</scope>
     </dependency>
   </dependencies>

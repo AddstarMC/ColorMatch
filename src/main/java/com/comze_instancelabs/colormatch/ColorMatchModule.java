@@ -138,7 +138,7 @@ public class ColorMatchModule extends MinigameModule {
 		menu.addItem(floorDepth.getMenuItem("Floor Depth", Material.BRICK, 1, 255));
 		menu.addItem(material.getMenuItem("Board Material", Material.WHITE_TERRACOTTA, Arrays.asList("The base material the board", "is made of. The colour ", "of that material will be randomized")));
 		menu.addItem(spectatorHeight.getMenuItem("Spectate Height", Material.GLASS, Arrays.asList("The height above the board", "that spectators will hover at")));
-		menu.addItem(superSigns.getMenuItem("Super Sign Count", Material.SIGN, Arrays.asList("The number of super signs", "this game will attempt to use.", "They must be named as such ", "'colormatch_<minigame><#>'", "where <minigame> is the name ", "of the minigame and ", "<#> is the number of the sign ", "starting from 1"), 0, 10));
+		menu.addItem(superSigns.getMenuItem("Super Sign Count", Material.OAK_SIGN, Arrays.asList("The number of super signs", "this game will attempt to use.", "They must be named as such ", "'colormatch_<minigame><#>'", "where <minigame> is the name ", "of the minigame and ", "<#> is the number of the sign ", "starting from 1"), 0, 10));
 		menu.addItem(idleMessage.getMenuItem("Idle Message", Material.BOOK, Arrays.asList("The message super signs", "will display after the game")));
 		menu.addItem(roundsPerGame.getMenuItem("Rounds per Game", Material.REPEATER, 0, Integer.MAX_VALUE));
 		menu.addItem(roundWaitTime.getMenuItem("Round Wait Time", Material.CLOCK, Arrays.asList("The time between the colour", "being removed and a new round", "begining in seconds"), 0, 200));

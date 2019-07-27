@@ -3,9 +3,9 @@ package com.comze_instancelabs.colormatch.patterns.logic;
 import java.util.ArrayList;
 import java.util.List;
 
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.DyeColor;
 
-import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.Minigames;
 
 import com.comze_instancelabs.colormatch.GameBoard;

@@ -1,6 +1,7 @@
 package com.comze_instancelabs.colormatch;
 
 import au.com.mineauz.minigames.MinigameMessageType;
+import au.com.mineauz.minigames.objects.MinigamePlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.conversations.Conversation;
@@ -15,7 +16,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.comze_instancelabs.colormatch.patterns.CustomPattern;
 import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
-import au.com.mineauz.minigames.MinigamePlayer;
 import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.tool.MinigameTool;

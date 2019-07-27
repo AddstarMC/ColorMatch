@@ -36,7 +36,6 @@ public class Main extends JavaPlugin implements Listener {
 		PatternRegistry.loadSaved();
 		loadDefaults();
 		saveConfig();
-
 		getConfigVars();
 
 		try {
