@@ -105,6 +105,12 @@
     	<version>1.14-SNAPSHOT</version>
     	<scope>provided</scope>
     </dependency>
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>4.13-beta-3</version>
+          <scope>test</scope>
+      </dependency>
   </dependencies>
 
   <build>

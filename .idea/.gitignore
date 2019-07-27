@@ -2,3 +2,6 @@
 
 .idea/*
 target
+
+# Default ignored files
+/workspace.xml
