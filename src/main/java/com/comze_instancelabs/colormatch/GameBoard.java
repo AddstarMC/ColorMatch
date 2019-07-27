@@ -44,10 +44,10 @@ public class GameBoard {
 	
 	public GameBoard(Plugin plugin) {
 		random = new Random();
-		activeBlocks = new ArrayList<Block>();
-		engine = new StateEngine<GameBoard>(plugin);
+		activeBlocks = new ArrayList<>();
+		engine = new StateEngine<>(plugin);
 		availablePatterns = new WeightedPatternMap();
-		spectators = new LinkedList<Player>();
+		spectators = new LinkedList<>();
 		
 		currentPattern = PatternRegistry.getPattern("squares");
 	}
