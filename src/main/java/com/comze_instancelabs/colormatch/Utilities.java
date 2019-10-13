@@ -11,11 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
 
 public class Utilities {
-
-	@Deprecated
-	public static DyeColor getBlockColour(Block block) {
-		return Colors.getBlockColour(block);
-	}
 	
 	public static ItemStack makeItem(Material material, DyeColor colour) {
 		Material mat =  Colors.modifyColour(material,colour);

@@ -66,7 +66,7 @@ public class GameBoard {
 	
 	public void clearExcept(DyeColor colour) {
 		for (Block block : activeBlocks) {
-			if (Utilities.getBlockColour(block) != colour)
+			if (Colors.getBlockColour(block) != colour)
 				block.setType(Material.AIR);
 		}
 	}
@@ -95,10 +95,10 @@ public class GameBoard {
 	}
 	
 	public void updateSigns(String message, DyeColor colour) {
-		if (Main.signmaker != null) {
+		if (Main.signMaker != null) {
 			for (int i = 1; i <= module.getSuperSignCount(); ++i) {
 				String signName = "colormatch_" + getMinigame().getName(false) + i;
-				TextSign sign = Main.signmaker.getSign(signName);
+				TextSign sign = Main.signMaker.getSign(signName);
 				if (sign != null) {
 					sign.setMaterial(Colors.modifyColour(getMaterial(),colour));
 					sign.setText(message);

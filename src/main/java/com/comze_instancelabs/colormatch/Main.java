@@ -23,7 +23,7 @@ public class Main extends JavaPlugin implements Listener {
 
 	public static final DyeColor[] colors = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE};
 	public static final DyeColor[] extendedColor = new DyeColor[] {DyeColor.BLUE, DyeColor.RED, DyeColor.CYAN, DyeColor.BLACK, DyeColor.GREEN, DyeColor.YELLOW, DyeColor.ORANGE, DyeColor.PURPLE,DyeColor.LIGHT_BLUE,DyeColor.BROWN,DyeColor.GRAY,DyeColor.LIME,DyeColor.MAGENTA,DyeColor.PINK,DyeColor.LIGHT_GRAY};
-	public static SignMakerPlugin signmaker = null;
+	public static SignMakerPlugin signMaker = null;
 	public static Main plugin;
 	
 	@Override
@@ -82,8 +82,8 @@ public class Main extends JavaPlugin implements Listener {
 	}
 
 	private boolean setupSignMaker() {
-		signmaker = (SignMakerPlugin) getServer().getPluginManager().getPlugin("SuperSigns");
-		return signmaker != null;
+		signMaker = (SignMakerPlugin) getServer().getPluginManager().getPlugin("SuperSigns");
+		return signMaker != null;
 	}
 
 	public void getConfigVars() {
