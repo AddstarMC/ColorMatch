@@ -3,6 +3,7 @@ package com.comze_instancelabs.colormatch.patterns;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.logging.Level;
 
 import au.com.mineauz.minigames.Minigames;
@@ -133,9 +134,15 @@ public class CustomPattern extends PatternBase {
 				mat = Material.getMaterial(name,true);
 
 				if(mat == null){
-					Wool wool = new Wool(DyeColor.getByWoolData(data));
-					wool.getColor();
-					mat = Colors.modifyColour(Material.WHITE_TERRACOTTA,wool.getColor());
+          Wool wool;
+				  try {
+            wool = new Wool(DyeColor.getByWoolData(data));
+          }catch (NullPointerException ignored) {
+				    byte d = (byte) (new Random().nextInt(15)-1);
+				    wool = new Wool(DyeColor.getByWoolData(d));
+          }
+          wool.getColor();
+          mat = Colors.modifyColour(Material.WHITE_TERRACOTTA, wool.getColor());
 				}
 			}
 			mats.put(id, mat);
