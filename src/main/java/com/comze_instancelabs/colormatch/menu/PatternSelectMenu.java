@@ -57,13 +57,10 @@ public class PatternSelectMenu {
     	
     	// Add controls
     	MenuItemCustom done = new MenuItemCustom("Back", Material.REDSTONE_TORCH);
-    	done.setClick(new InteractionInterface() {
-			@Override
-			public Object interact(Object object) {
-				previous.show(viewer);
-				return null;
-			}
-		});
+    	done.setClick(object -> {
+        previous.show(viewer);
+        return null;
+      });
     	menu.addItem(done, menu.getSize() - 9);
 		
 		return menu;
@@ -110,8 +107,7 @@ public class PatternSelectMenu {
 			player.getPlayer().closeInventory();
 			player.sendInfoMessage("Enter the weight of this pattern, an integer 1 or more. The higher its value, the more likely it is to be chosen. The menu will automatically reopen in 20s if nothing is entered.");
 			player.setManualEntry(this);
-			getContainer().startReopenTimer(20);;
-			
+			getContainer().startReopenTimer(20);
 			return null;
 		}
 		
@@ -124,7 +120,8 @@ public class PatternSelectMenu {
 				} else {
 					WeightedPattern wPattern = new WeightedPattern(weight, patternName, pattern);
 					previous.getGame().getPatternMap().add(wPattern);
-				}
+          getContainer().getViewer().sendMessage( patternName+" added with weight  "+weight,MinigameMessageType.INFO);
+        }
 			} catch(NumberFormatException e) {
 				getContainer().getViewer().sendMessage( "Invalid weight value. Must be an integer 1 or higher.", MinigameMessageType.ERROR);
 			}

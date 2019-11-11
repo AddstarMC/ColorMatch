@@ -98,8 +98,6 @@ public class CustomPattern extends PatternBase {
 			mats.put(id, mat);
 		}
 		return readPixels(mats,in);
-		// Read pixels
-
 	}
 	private boolean readPixels(HashMap<Integer, Material> mats, DataInputStream in) throws IOException{
 		pixels = new PatternPixel[width * height];
@@ -125,14 +123,17 @@ public class CustomPattern extends PatternBase {
 			int id = in.readUnsignedShort();
 			String name = in.readUTF();
 			byte data = in.readByte();
-			Material mat;
+			Material mat = null;
 			try {
 				mat = Material.valueOf(name);
 			}catch (IllegalArgumentException e){
 				Minigames.log(Level.WARNING,"Pattern has Legacy Materials - it may require remaking : " +file.getCanonicalPath());
-				Minigames.log(Level.WARNING,e.getMessage());
-				mat = Material.getMaterial(name,true);
-
+        Minigames.log(Level.WARNING,"String:"+name+" data:"+data);
+        Minigames.log(Level.WARNING,e.getMessage());
+        ColorClay clay = ColorClay.getByID(data);
+        if(clay != null){
+          mat = clay.getMaterial();
+        }
 				if(mat == null){
           Wool wool;
 				  try {
@@ -232,4 +233,47 @@ public class CustomPattern extends PatternBase {
 		
 		return pattern;
 	}
+	enum ColorClay{
+
+	  WHITE(Material.WHITE_TERRACOTTA,0),
+    ORANGE(Material.ORANGE_TERRACOTTA,1),
+	  BLACK(Material.BLACK_TERRACOTTA,15),
+    RED(Material.RED_TERRACOTTA,14),
+    BLUE(Material.BLUE_TERRACOTTA,11),
+    LIGHT_BLUE(Material.LIGHT_BLUE_TERRACOTTA,3),
+    GREEN(Material.GREEN_TERRACOTTA,13),
+    LIME(Material.LIME_TERRACOTTA,5),
+    PINK(Material.PINK_TERRACOTTA,6),
+    MAGNETA(Material.MAGENTA_TERRACOTTA,2),
+    LIGHT_GREY(Material.LIGHT_GRAY_TERRACOTTA,8),
+    YELLOW(Material.YELLOW_TERRACOTTA,4),
+    GRAY(Material.GRAY_TERRACOTTA,7),
+    CYAN(Material.CYAN_TERRACOTTA,9),
+    PURPLE(Material.PURPLE_TERRACOTTA,10);
+
+    private Material material;
+    private int id;
+    private static HashMap<Integer, ColorClay> byID = new HashMap<>();
+
+    ColorClay(Material material, int id) {
+      this.material = material;
+      this.id = id;
+    }
+    static {
+      for(ColorClay cClay:values())
+      byID.put(cClay.id,cClay);
+    }
+
+    public static ColorClay getByID(int id){
+      return byID.get(id);
+    }
+
+    public int getId() {
+      return id;
+    }
+
+    public Material getMaterial() {
+      return material;
+    }
+  }
 }

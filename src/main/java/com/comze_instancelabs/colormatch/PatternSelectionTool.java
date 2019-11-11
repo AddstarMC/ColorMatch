@@ -20,6 +20,7 @@ import au.com.mineauz.minigames.minigame.Minigame;
 import au.com.mineauz.minigames.minigame.Team;
 import au.com.mineauz.minigames.tool.MinigameTool;
 import au.com.mineauz.minigames.tool.ToolMode;
+import org.jetbrains.annotations.NotNull;
 
 public class PatternSelectionTool implements ToolMode {
 
@@ -78,20 +79,21 @@ public class PatternSelectionTool implements ToolMode {
 				// Use a conversation to get the pattern name
 				Conversation conversation = new ConversationFactory(Main.plugin)
 					.withFirstPrompt(new StringPrompt() {
-						@Override
-						public String getPromptText(ConversationContext context) {
+						@NotNull
+            @Override
+						public String getPromptText(@NotNull ConversationContext context) {
 							return "> Please enter the name for this new pattern";
 						}
 						
 						@Override
-						public Prompt acceptInput(ConversationContext context, String input) {
+						public Prompt acceptInput(@NotNull ConversationContext context, String input) {
 							if (input.contains(" ") || input.contains(".") || input.contains("|")) {
 								player.sendMessage( "Name contains invalid values", MinigameMessageType.ERROR);
 							} else {
 								try {
 									PatternRegistry.addPattern(input, pattern);
 									PatternRegistry.save(input, pattern);
-									player.sendMessage(  "Pattern saved", MinigameMessageType.WIN);
+									context.getForWhom().sendRawMessage("Pattern Saved");
 								} catch(IllegalArgumentException e) {
 									player.sendInfoMessage( "A pattern with that name already exists");
 								}
