@@ -12,7 +12,6 @@ import com.comze_instancelabs.colormatch.Util.WeightedPatternMap.WeightedPattern
 import com.comze_instancelabs.colormatch.patterns.PatternBase;
 import com.comze_instancelabs.colormatch.patterns.PatternRegistry;
 
-import au.com.mineauz.minigames.menu.InteractionInterface;
 import au.com.mineauz.minigames.menu.Menu;
 import au.com.mineauz.minigames.menu.MenuItem;
 import au.com.mineauz.minigames.menu.MenuItemCustom;

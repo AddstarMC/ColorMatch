@@ -64,9 +64,14 @@ public class CustomPattern extends PatternBase {
 			int version = in.readUnsignedByte();
 			switch (version){
 				case 1:
-					return loadVersion1(in,file);
+          if(loadVersion1(in,file)) {
+            this.save(file);
+            return true;
+          }else{
+            return false;
+          }
 				case 2:
-					return loadVersion2(in);
+				  return loadVersion2(in);
 					default:
 						return false;
 			}
